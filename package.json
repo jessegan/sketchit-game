@@ -4,9 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server/server.js",
+    "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Jesse Gan",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^5.11.1",
+    "webpack-cli": "^4.3.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
