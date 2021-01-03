@@ -32,7 +32,6 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    port: 3000,
-    open: true
+    port: 3000
   }
 }
