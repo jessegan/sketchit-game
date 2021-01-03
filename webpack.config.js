@@ -32,6 +32,13 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    port: 3000
+    port: 3000,
+    disableHostCheck: true,
+    proxy: {
+      '/': {
+        target: 'http://localhost:8080',
+        secure: false
+      }
+    }
   }
 }
