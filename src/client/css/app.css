@@ -9,7 +9,6 @@
   --base-color: #F5E6CC;
 }
 
-
 * {
   box-sizing: border-box;
   padding: 0;
@@ -20,4 +19,9 @@ body {
   font-family: 'Lato', sans-serif;
   color: var(--primary-text-color);
   line-height: 1.6;
+
+  /* Add background image */
+  background: url(../../../public/Background.jpg);
+  background-size: cover;
+  background-attachment: fixed;
 }
