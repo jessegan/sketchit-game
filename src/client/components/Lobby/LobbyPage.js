@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import CreatePlayer from './CreatePlayer'
 
 export class LobbyPage extends Component {
 
@@ -26,7 +27,7 @@ export class LobbyPage extends Component {
           return (<></>) // Some error page
       }
     } else {
-      return (<></>) // CreatePlayer Component
+      return (<CreatePlayer />) // CreatePlayer Component
     }
   }
 
