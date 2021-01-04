@@ -1,14 +1,12 @@
 import React from 'react'
 
 /**
- * name, value, onChange to be passed in directly
- * 
- * other options will be set as a object
+ * name, value, onChange, and other options passed down from props
  */
 
-const ControlledTextInput = (props) => {
+const ControlledTextInput = ({ className, options }) => {
   return (
-    <input type='text' {...props} />
+    <input className={`${className}`} type='text' {...options} />
   )
 }
 

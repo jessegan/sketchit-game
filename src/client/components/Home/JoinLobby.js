@@ -51,7 +51,7 @@ export class JoinLobby extends Component {
     return (
       <div className="join-lobby form-container">
         <form onSubmit={ this.handleSubmit } >
-          <ControlledTextInput {...this.getCodeTextInputOptions()} /> 
+          <ControlledTextInput options={this.getCodeTextInputOptions()} /> 
           <SubmitButton className={"btn-primary btn-block"} options={this.getSubmitButtonOptions()} />
         </form>
       </div>
