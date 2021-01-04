@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
 import SubmitButton from '../Buttons/SubmitButton'
 import ControlledTextInput from '../Forms/ControlledTextInput'
 
 export class JoinLobby extends Component {
 
   state = {
-    code: "",
-    redirect: false
+    code: ""
   }
 
   handleCodeInput = e => {
@@ -25,18 +23,10 @@ export class JoinLobby extends Component {
     e.preventDefault()
 
     if (true) { // TODO: add validation for lobby existing
-      this.setState({
-        redirect: true
-      })
+      this.props.history.push(`/lobby/${this.state.code}`)
     }
 
     console.log("JOIN FORM SUBMITTED")
-  }
-
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      return <Redirect to={`lobby/${this.state.code}`} />
-    }
   }
 
   getCodeTextInputOptions = () => {
@@ -60,7 +50,6 @@ export class JoinLobby extends Component {
   render() {
     return (
       <div className="join-lobby form-container">
-        { this.renderRedirect() }
         <form onSubmit={ this.handleSubmit } >
           <ControlledTextInput {...this.getCodeTextInputOptions()} /> 
           <SubmitButton className={"btn-primary btn-block"} options={this.getSubmitButtonOptions()} />
