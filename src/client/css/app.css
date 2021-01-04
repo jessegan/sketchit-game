@@ -44,8 +44,71 @@ body {
   padding: 2px;
 }
 
+input[type='text'] {
+  width: 100%;
+  margin: 5px 0;
+  height: 30px;
+
+  border: solid var(--base-color) 1px;
+  border-radius: 30px;
+
+  -webkit-transition : border 200ms ease-out; 
+  -moz-transition : border 200ms ease-out;
+  -o-transition : border 200ms ease-out;
+}
+
+input[type='text']:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+}
+input[type='text']:hover {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+}
+
+/* Buttons */
+
+.btn {
+  display: inline-block;
+
+  margin: 2px;
+  padding: 6px 12px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+
+  border: none;
+  border-radius: 5px;
+}
+
+.btn-primary {
+  color: white;
+  background-color: var(--primary-color);
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+.btn-secondary {
+  color: white;
+  background-color: var(--tertiary-color);
+}
+
+.btn:hover {
+  transform: scale(.98);
+}
+
 /* Utilities */
 
 .align-hori-center {
   margin: 0 auto;
+}
+
+.text-center {
+  text-align: center;
 }
