@@ -26,6 +26,23 @@ body {
   background-attachment: fixed;
 }
 
+h4 {
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+/* Components */
+
+.color-picker {
+  width: 75%;
+  padding: 5%;
+  padding-top: 0;
+}
+
+.circle-picker {
+  justify-content: center;
+}
+
 /* Cards */
 
 .card-main {

@@ -27,7 +27,7 @@ export class LobbyPage extends Component {
           return (<></>) // Some error page
       }
     } else {
-      return (<CreatePlayer />) // CreatePlayer Component
+      return (<CreatePlayer createPlayer={ this.createPlayer } />) // CreatePlayer Component
     }
   }
 

@@ -1,18 +1,32 @@
 import React, { Component } from 'react'
 import SubmitButton from '../Buttons/SubmitButton'
 import MainCard from '../Cards/MainCard'
+import ColorPicker from '../Forms/ColorPicker'
 import ControlledTextInput from '../Forms/ControlledTextInput'
 
 export class CreatePlayer extends Component {
 
   state = {
-    username: ""
+    username: "",
+    color: "#f44336"
   }
 
   handleInputChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     })
+  }
+
+  handleColorChange = (color) => {
+    this.setState({
+      color: color
+    })
+  }
+
+  handleSubmit = e => {
+    e.preventDefault()
+
+    this.props.createPlayer()
   }
 
   getUsernameInputOptions = () => {
@@ -34,8 +48,10 @@ export class CreatePlayer extends Component {
   render() {
     return (
       <MainCard>
-        <form>
+        <form onSubmit={ this.handleSubmit }>
           <ControlledTextInput className={"text-center"} options={ this.getUsernameInputOptions() }/>
+          <h4 className="text-center">Pick a Color</h4>
+          <ColorPicker color={ this.state.color } onColorChange={ this.handleColorChange }/>
           <SubmitButton className={"btn-primary btn-block"} options={ this.getSubmitButtonOptions() } />
         </form>
       </MainCard>
