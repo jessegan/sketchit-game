@@ -10,7 +10,8 @@ module.exports = {
   entry: "./src/client/index.js",
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: "[name].js"
+    filename: "[name].js",
+    publicPath: '/'
   },
   plugins: [
     htmlPlugin
@@ -42,6 +43,7 @@ module.exports = {
   devServer: {
     port: 3000,
     disableHostCheck: true,
+    historyApiFallback: true,
     proxy: {
       '/': {
         target: 'http://localhost:8080',

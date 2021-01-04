@@ -8,6 +8,14 @@ const DIST_DIR = path.join(__dirname,'../../dist')
 
 app.use(express.static(DIST_DIR))
 
+app.get('/*', (req,res) => {
+  res.sendFile(path.join(__dirname,'../../dist/index.html'), (err) => {
+    if (err){
+      res.status(500).send(err)
+    }
+  })
+})
+
 server = app.listen(port, () => {
   console.log(`App listening on port: ${port}`)
 })
