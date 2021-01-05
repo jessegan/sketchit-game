@@ -1,8 +1,8 @@
 import React from 'react'
 
-const MainCard = ({children}) => {
+const MainCard = ({classes, styles, children}) => {
   return (
-    <div className="card-main align-hori-center">
+    <div className={`card-main align-hori-center ${classes}`} style={{ ...styles }} >
       { children }
     </div>
   )
