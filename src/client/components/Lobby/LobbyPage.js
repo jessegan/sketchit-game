@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import PlayersList from '../Players/PlayersList'
 import CreatePlayer from './CreatePlayer'
+import Menu from '../Menu/Menu'
 
 import { joinLobby } from '../../networking'
 
@@ -23,7 +23,7 @@ export class LobbyPage extends Component {
     if (this.state.playerCreated){
       switch(this.state.gameStatus){
         case("menu"):
-          return (<PlayersList code={ this.props.match.params.code }/>) // Menu component
+          return (<Menu code={ this.props.match.params.code }/>) // Menu component
         case ("playing"):
           return (<></>) // Game component
         case ("post-game"):
