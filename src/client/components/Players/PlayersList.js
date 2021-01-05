@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import { socket } from '../../networking'
+
 import PlayerDiv from './PlayerDiv'
 
 /**
@@ -13,14 +15,20 @@ export class PlayersList extends Component {
   }
 
   componentDidMount() {
-    // connect to socket
+    socket.emit("INIT_PLAYERS",this.props.code)
 
-    // recieve initial players list by emitting 'init_players'
+    socket.on("UPDATE_PLAYERS", this.updatePlayers)
+  }
+
+  updatePlayers = ({players}) => {
+    this.setState({
+      players: players
+    })
   }
 
   renderPlayerDivs = () => {
     return this.state.players.map((player,i) => {
-      return (<PlayerDiv id={i} player={ player } />)
+      return (<PlayerDiv key={i} player={ player } />)
     })
   }
 
