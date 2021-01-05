@@ -49,7 +49,6 @@ export class LobbyPage extends Component {
     return (
       <div className="lobbypage">
         { this.renderLobby() }
-        <BlockButton className={"btn-primary"} onClick={() => this.props.history.push('/')} text={"HOME"}/>
       </div>
     )
   }
