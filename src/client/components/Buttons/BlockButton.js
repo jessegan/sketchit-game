@@ -1,8 +1,8 @@
 import React from 'react'
 
-const BlockButton = ({className,options,text}) => {
+const BlockButton = ({className,text,onClick}) => {
   return (
-    <button className={`btn btn-block ${className}`} {...options} >{ text }</button>
+    <button className={`btn btn-block ${className}`} onClick={ onClick } >{ text }</button>
   )
 }
 
