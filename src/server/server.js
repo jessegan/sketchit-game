@@ -38,9 +38,7 @@ const io = socketio(server)
 io.on('connection', client => {
   console.log("User connected!", client.id)
 
-  // client.on("join_lobby", (code,username,color) ={
-
-  // })
+  client.on("JOIN_LOBBY", joinLobby)
 
   client.on('disconnect', () => {
     console.log("User disconnected!")
@@ -49,3 +47,8 @@ io.on('connection', client => {
 
 // Initialize empty lobbies object
 var lobbies = {}
+
+function joinLobby(playerData) {
+  lobbies[playerData.code].addPlayer(this,playerData)
+  console.log("Player Added!")
+}

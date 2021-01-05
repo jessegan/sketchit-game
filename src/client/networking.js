@@ -12,3 +12,8 @@ export const createLobby = () => {
 
   return fetch(`http://${window.location.host}/lobbies`, options)
 }
+
+// Emit join_lobby to socket w/ code, username, color 
+export const joinLobby = (code,username,color) => {
+  socket.emit("JOIN_LOBBY", {code , username, color })
+}

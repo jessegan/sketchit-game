@@ -1,6 +1,8 @@
 const nanoid = require('nanoid')
 const customNanoid = nanoid.customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',6)
 
+const Player = require('./player')
+
 class Lobby {
 
   constructor() {

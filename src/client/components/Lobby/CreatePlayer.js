@@ -26,7 +26,9 @@ export class CreatePlayer extends Component {
   handleSubmit = e => {
     e.preventDefault()
 
-    this.props.createPlayer()
+    // TODO: Add form validation
+
+    this.props.createPlayer(this.state)
   }
 
   getUsernameInputOptions = () => {

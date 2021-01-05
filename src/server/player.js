@@ -1,3 +1,5 @@
+const { ModuleFilenameHelpers } = require("webpack")
+
 class Player {
 
   constructor(socketid,username,color) {
@@ -8,3 +10,5 @@ class Player {
   }
 
 }
+
+module.exports = Player
