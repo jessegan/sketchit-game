@@ -47,6 +47,10 @@ io.on('connection', client => {
   })
 })
 
+/**
+ * MANAGE SOCKET ACTIONS
+ */
+
 // Initialize empty lobbies object
 var lobbies = {}
 
@@ -60,12 +64,14 @@ function joinLobby(playerData) {
   console.log("Player Added!")
 }
 
+// Sends updated players list to all sockets in the lobby
 function sendPlayersUpdate(code) {
 
   io.in(code).emit("UPDATE_PLAYERS", { players: Object.values(lobbies[code].players) })
   console.log("Players Update sent to:", code)
 }
 
+// Sends current players list to the client requesting
 function sendPlayersInit(code) {
   this.emit("UPDATE_PLAYERS", { players: Object.values(lobbies[code].players) })
   
