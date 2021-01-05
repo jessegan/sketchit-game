@@ -2,13 +2,22 @@ import React, { Component } from 'react'
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 
-import { joinLobby } from '../../networking'
+import { joinLobby, leaveLobby } from '../../networking'
+import BlockButton from '../Buttons/BlockButton'
 
 export class LobbyPage extends Component {
 
   state = {
     playerCreated: false,
     gameStatus: "menu"
+  }
+
+  socketCleanup = () => {
+    leaveLobby(this.props.match.params.code)
+  }
+
+  componentWillUnmount() {
+    this.socketCleanup()
   }
 
   createPlayer = (playerData) => {
@@ -40,6 +49,7 @@ export class LobbyPage extends Component {
     return (
       <div className="lobbypage">
         { this.renderLobby() }
+        <BlockButton className={"btn-primary"} onClick={() => this.props.history.push('/')} text={"HOME"}/>
       </div>
     )
   }

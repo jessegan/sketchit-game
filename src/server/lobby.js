@@ -30,13 +30,20 @@ class Lobby {
     delete this.sockets[socketid]
     delete this.players[socketid]
 
+    this.numPlayers--
+
     if (socketid === this.host){
       this.assignHost()
     }
   }
 
   assignHost(){
-    this.host = this.players.keys().first()
+    if (this.numPlayers > 1) {
+      this.host = Object.keys(this.players)[0]
+    } else {
+      this.host = null
+    }
+    
   }
 
 }

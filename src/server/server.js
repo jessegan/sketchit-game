@@ -28,7 +28,7 @@ app.get('/*', (req,res) => {
   })
 })
 
-server = app.listen(port, () => {
+let server = app.listen(port, () => {
   console.log(`App listening on port: ${port}`)
 })
 
@@ -39,12 +39,10 @@ io.on('connection', client => {
   console.log("User connected!", client.id)
 
   client.on("JOIN_LOBBY", joinLobby)
-
   client.on("INIT_PLAYERS", sendPlayersInit)
+  client.on("LEAVE_LOBBY", leaveLobby)
 
-  client.on('disconnect', () => {
-    console.log("User disconnected!")
-  })
+  client.on('disconnect', onDisconnect)
 })
 
 /**
@@ -53,15 +51,20 @@ io.on('connection', client => {
 
 // Initialize empty lobbies object
 var lobbies = {}
+var players = {}
 
 function joinLobby(playerData) {
   const lobby = lobbies[playerData.code]
 
-  lobby.addPlayer(this,playerData) // Add player to the lobby
-  this.join(lobby.code) // Join Lobby room
-  sendPlayersUpdate(lobby.code) // Emit UPDATE_PLAYERS w/ updated players list
+  // Add player to lobby and join socket room
+  lobby.addPlayer(this,playerData) 
+  this.join(lobby.code)
+  players[this.id] = lobby.code
 
   console.log("Player Added!")
+
+  // Emit UPDATE_PLAYERS w/ updated players list
+  sendPlayersUpdate(lobby.code) 
 }
 
 // Sends updated players list to all sockets in the lobby
@@ -76,4 +79,43 @@ function sendPlayersInit(code) {
   this.emit("UPDATE_PLAYERS", { players: Object.values(lobbies[code].players) })
   
   console.log("Players init sent to:", this.id)
+}
+/**
+ * Disconnects client from socket room and lobby
+ * 
+ * @param {*} code 
+ */
+function leaveLobby(code) {
+  // remove player from lobby
+  const lobby = lobbies[code]
+
+  lobby.removePlayer(this.id)
+  delete players[this.id]
+
+  // leave socket room
+  this.leave(code)
+
+  console.log("Player disconnected from:", code)
+
+  // remove lobby if empty else send players update to room
+  if (lobby.numPlayers === 0) {
+    delete lobbies[code]
+    console.log("Lobby deleted:", code)
+  } else {
+    sendPlayersUpdate(code)
+  }
+  
+}
+
+/**
+ * Handles when socket disconnects (page closes or refreshes)
+ */
+function onDisconnect() {
+  // remove from lobby object
+  if (players[this.id]){
+    leaveLobby.call(this, players[this.id])
+  }
+
+
+  console.log("User disconnected!", this.id)
 }

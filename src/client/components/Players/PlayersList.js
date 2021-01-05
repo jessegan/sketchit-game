@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
-import { socket } from '../../networking'
+import { requestPlayers, subscribeToPlayers, unsubscribeToPlayers } from '../../networking'
+import MainCard from '../Cards/MainCard'
 
 import PlayerDiv from './PlayerDiv'
 
@@ -15,9 +16,12 @@ export class PlayersList extends Component {
   }
 
   componentDidMount() {
-    socket.emit("INIT_PLAYERS",this.props.code)
+    requestPlayers(this.props.code)
+    subscribeToPlayers(this.updatePlayers)
+  }
 
-    socket.on("UPDATE_PLAYERS", this.updatePlayers)
+  componentWillUnmount() {
+    unsubscribeToPlayers()
   }
 
   updatePlayers = ({players}) => {
@@ -34,9 +38,13 @@ export class PlayersList extends Component {
 
   render() {
     return (
-      <div className="players-list">
-        { this.renderPlayerDivs() }
-      </div>
+      <MainCard styles={{ width: "300px" }}>
+        <h1 className="text-center text-underline">Players</h1>
+        <div className="players-list grid">
+          { this.renderPlayerDivs() }
+        </div>
+      </MainCard>
+
     )
   }
 }

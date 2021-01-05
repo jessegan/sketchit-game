@@ -31,3 +31,23 @@ export const createLobby = () => {
 export const joinLobby = (code,username,color) => {
   socket.emit("JOIN_LOBBY", {code , username, color })
 }
+
+// Emit LEAVE_LOBBY to socket w/ code
+export const leaveLobby = code => {
+  socket.emit("LEAVE_LOBBY", code)
+}
+
+// Subscribe to players updates
+export const subscribeToPlayers = (updateHandler) => {
+  socket.on("UPDATE_PLAYERS", updateHandler)
+}
+
+// Unsubscribe to players updates
+export const unsubscribeToPlayers = () => {
+  socket.off("UPDATE_PLAYERS")
+}
+
+// Request initial players
+export const requestPlayers = (code) => {
+  socket.emit("INIT_PLAYERS", code)
+}
