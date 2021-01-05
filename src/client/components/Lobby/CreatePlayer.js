@@ -19,7 +19,7 @@ export class CreatePlayer extends Component {
 
   handleColorChange = (color) => {
     this.setState({
-      color: color
+      color: color.hex || color
     })
   }
 
