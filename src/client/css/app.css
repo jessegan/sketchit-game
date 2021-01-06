@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@900&display=swap');
 
 :root {
   --primary-text-color: #333;
@@ -43,6 +44,33 @@ h4 {
   justify-content: center;
 }
 
+.lobby-menu.flex {
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.lobby-menu.flex > div {
+  margin: 0 5px;
+}
+
+.dot {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  display: block;
+}
+
+.username {
+  font-size: small;
+  font-weight: 900;
+}
+
+.players-list.grid {
+  grid-template-columns: repeat(2,1fr);
+  grid-template-rows: repeat(5,1fr);
+  row-gap: 20px;
+}
+
 /* Cards */
 
 .card-main {
@@ -52,6 +80,12 @@ h4 {
   border-radius: 5px;
   box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
   padding: 8px;
+}
+
+/* Divs */
+
+.block {
+  padding: 2.5%;
 }
 
 /* Forms */
@@ -128,4 +162,16 @@ input[type='text']:hover {
 
 .text-center {
   text-align: center;
+}
+
+.text-underline {
+  text-decoration: underline;
+}
+
+.grid {
+  display: grid;
+}
+
+.flex {
+  display: flex;
 }
