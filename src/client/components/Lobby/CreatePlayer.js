@@ -49,7 +49,7 @@ export class CreatePlayer extends Component {
 
   render() {
     return (
-      <MainCard>
+      <MainCard classes={"align-hori-center"}>
         <form onSubmit={ this.handleSubmit }>
           <ControlledTextInput className={"text-center"} options={ this.getUsernameInputOptions() }/>
           <h4 className="text-center">Pick a Color</h4>

@@ -15,7 +15,7 @@ const HomePage = (props) => {
 
   return (
     <div className="homepage">
-      <MainCard >
+      <MainCard classes={"align-hori-center"}>
         <JoinLobby history={ props.history } />
         <p className="text-center">----</p>
         <BlockButton className={"btn-secondary"} text={"Create Lobby"} onClick={ onClick } />
