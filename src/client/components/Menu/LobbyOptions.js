@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
+import React from 'react'
+import MainCard from '../Cards/MainCard'
+import GameForm from './GameForm'
 
-export class LobbyOptions extends Component {
-  render() {
-    return (
-      <div className="lobby-options">
-        
-      </div>
-    )
-  }
+const LobbyOptions = () => {
+  return (
+    <MainCard >
+      <GameForm />
+    </MainCard>
+  )
 }
 
 export default LobbyOptions
