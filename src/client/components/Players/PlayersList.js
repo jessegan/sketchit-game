@@ -12,16 +12,34 @@ import PlayerDiv from './PlayerDiv'
 export class PlayersList extends Component {
 
   state = {
-    players: []
+    players: [
+      {
+        username: "test1",
+        color: "#AAAAAA"
+      },
+      {
+        username: "usernamewithmax",
+        color: "#BBBBBB"
+      },
+      {
+        username: "test3",
+        color: "#CCCCCC"
+      },
+      {
+        username: "test4",
+        color: "#DDDDDD"
+      },
+
+    ]
   }
 
   componentDidMount() {
-    requestPlayers(this.props.code)
-    subscribeToPlayers(this.updatePlayers)
+    // requestPlayers(this.props.code)
+    // subscribeToPlayers(this.updatePlayers)
   }
 
   componentWillUnmount() {
-    unsubscribeToPlayers()
+    //unsubscribeToPlayers()
   }
 
   updatePlayers = ({players}) => {
@@ -39,8 +57,8 @@ export class PlayersList extends Component {
   render() {
     return (
       <MainCard styles={{ width: "300px" }}>
-        <h1 className="text-center text-underline">Players</h1>
-        <div className="players-list grid">
+        <h2 className="text-center">Players</h2>
+        <div className="players-list grid block">
           { this.renderPlayerDivs() }
         </div>
       </MainCard>

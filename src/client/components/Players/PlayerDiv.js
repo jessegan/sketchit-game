@@ -1,9 +1,10 @@
 import React from 'react'
 
-const PlayerDiv = ({id,player}) => {
+const PlayerDiv = ({player}) => {
   return (
-    <div id={id}>
-      { player.username }
+    <div className="player text-center">
+      <span className="dot align-hori-center" style={{backgroundColor: player.color}} ></span>
+      <span className="username">{ player.username }</span>
     </div>
   )
 }
