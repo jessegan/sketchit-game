@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 
-import { joinLobby, leaveLobby, requestPlayers, subscribeToPlayers, unsubscribeToPlayers } from '../../networking'
+import { joinLobby, leaveLobby, requestPlayers, subscribeToPlayers, unsubscribeToPlayers, getSocketId } from '../../networking'
 
 export class LobbyPage extends Component {
 
   state = {
-    playerCreated: false,
+    userId: null,
     gameStatus: "menu",
     players: []
   }
@@ -42,12 +42,12 @@ export class LobbyPage extends Component {
     joinLobby(this.props.match.params.code, playerData.username,playerData.color)
 
     this.setState({
-      playerCreated: true
+      userId: getSocketId()
     })
   }
 
   renderLobby = () => {
-    if (this.state.playerCreated){
+    if (this.state.userId){
       switch(this.state.gameStatus){
         case("menu"):
           return (<Menu code={ this.props.match.params.code } players={ this.state.players } />) // Menu component
