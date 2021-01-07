@@ -28,9 +28,10 @@ export class LobbyPage extends Component {
     unsubscribeToPlayers()
   }
 
-  updatePlayers = ({players}) => {
+  updatePlayers = ({players, host}) => {
     this.setState({
-      players: players
+      players: players,
+      host: host
     })
   }
 
@@ -50,7 +51,7 @@ export class LobbyPage extends Component {
     if (this.state.userId){
       switch(this.state.gameStatus){
         case("menu"):
-          return (<Menu code={ this.props.match.params.code } players={ this.state.players } />) // Menu component
+          return (<Menu code={ this.props.match.params.code } players={ this.state.players } host={ this.state.host } />) // Menu component
         case ("playing"):
           return (<></>) // Game component
         case ("post-game"):

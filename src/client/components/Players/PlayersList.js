@@ -13,7 +13,7 @@ export class PlayersList extends Component {
 
   renderPlayerDivs = () => {
     return this.props.players.map((player,i) => {
-      return (<PlayerDiv key={i} player={ player } />)
+      return (<PlayerDiv key={i} player={ player } isHost={ player.socketid === this.props.host }/>)
     })
   }
 
