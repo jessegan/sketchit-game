@@ -5,7 +5,7 @@ import GameForm from './GameForm'
 const LobbyOptions = (props) => {
   return (
     <MainCard >
-      <GameForm disabled={ props.userId !== props.host} />
+      <GameForm code={ props.code } disabled={ props.userId !== props.host} />
     </MainCard>
   )
 }
