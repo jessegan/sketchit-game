@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 
-import { joinLobby, leaveLobby, subscribeToPlayers, unsubscribeToPlayers, getSocketId } from '../../networking'
+import { joinLobby, leaveLobby, subscribeToPlayers, subscribeToGameUpdates, getSocketId } from '../../networking'
 
 export class LobbyPage extends Component {
 
   state = {
     userId: null,
-    gameStatus: "menu",
+    lobbyStatus: "menu",
     players: [],
     host: null
   }
@@ -21,17 +21,25 @@ export class LobbyPage extends Component {
 
   componentDidMount() {
     subscribeToPlayers(this.updatePlayers)
+    subscribeToGameUpdates({
+      handleStartGame: this.handleStartGame
+    })
   }
 
   componentWillUnmount() {
     this.socketCleanup()
-    unsubscribeToPlayers()
   }
 
   updatePlayers = ({players, host}) => {
     this.setState({
       players: players,
       host: host
+    })
+  }
+
+  handleStartGame = (payload) => {
+    this.setState({
+      lobbyStatus: "playing"
     })
   }
 
@@ -49,11 +57,11 @@ export class LobbyPage extends Component {
 
   renderLobby = () => {
     if (this.state.userId){
-      switch(this.state.gameStatus){
+      switch(this.state.lobbyStatus){
         case("menu"):
-          return (<Menu userId={ this.state.userId } players={ this.state.players } host={ this.state.host } />) // Menu component
+          return (<Menu code={ this.props.match.params.code } userId={ this.state.userId } players={ this.state.players } host={ this.state.host } />) // Menu component
         case ("playing"):
-          return (<></>) // Game component
+          return (<>GAME PLAYING</>) // Game component
         case ("post-game"):
           return (<></>) // Post-game component
         default: 

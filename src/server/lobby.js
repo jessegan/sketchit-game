@@ -2,6 +2,7 @@ const nanoid = require('nanoid')
 const customNanoid = nanoid.customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',6)
 
 const Player = require('./player')
+const Game  = require('./game')
 
 class Lobby {
 
@@ -44,6 +45,19 @@ class Lobby {
       this.host = null
     }
     
+  }
+
+  // Methods Managing the Game
+
+  startGame(options) {
+    this.game = new Game(this.players, options)
+
+    Object.values(this.sockets).forEach((socket) => {
+      socket.emit("GAME_UPDATE", {
+        type: "START_GAME",
+        payload: {}
+      })
+    })
   }
 
 }

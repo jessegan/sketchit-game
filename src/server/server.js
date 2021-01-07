@@ -41,6 +41,8 @@ io.on('connection', client => {
   client.on("JOIN_LOBBY", joinLobby)
   client.on("LEAVE_LOBBY", leaveLobby)
 
+  client.on("START_GAME", startGame)
+
   client.on('disconnect', onDisconnect)
 })
 
@@ -100,6 +102,22 @@ function leaveLobby(code) {
     sendPlayersUpdate(code)
   }
   
+}
+
+/**
+ * startGame
+ * 
+ * @param {Object} gameData contains code and options key
+ */
+function startGame( gameData ) {
+
+  // find the lobby
+  const lobby = lobbies[gameData.code]
+
+  // Start game for the lobby
+  lobby.startGame(gameData.options)
+
+  console.log("Starting Game:", lobby.code)
 }
 
 /**
