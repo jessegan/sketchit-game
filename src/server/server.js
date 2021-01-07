@@ -39,7 +39,6 @@ io.on('connection', client => {
   console.log("User connected!", client.id)
 
   client.on("JOIN_LOBBY", joinLobby)
-  client.on("INIT_PLAYERS", sendPlayersInit)
   client.on("LEAVE_LOBBY", leaveLobby)
 
   client.on('disconnect', onDisconnect)
@@ -69,17 +68,13 @@ function joinLobby(playerData) {
 
 // Sends updated players list to all sockets in the lobby
 function sendPlayersUpdate(code) {
+  const lobby = lobbies[code]
 
-  io.in(code).emit("UPDATE_PLAYERS", { players: Object.values(lobbies[code].players) })
+  io.in(code).emit("UPDATE_PLAYERS", { players: Object.values(lobby.players), host: lobby.host })
   console.log("Players Update sent to:", code)
 }
 
-// Sends current players list to the client requesting
-function sendPlayersInit(code) {
-  this.emit("UPDATE_PLAYERS", { players: Object.values(lobbies[code].players) })
-  
-  console.log("Players init sent to:", this.id)
-}
+
 /**
  * Disconnects client from socket room and lobby
  * 

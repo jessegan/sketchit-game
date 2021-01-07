@@ -47,11 +47,6 @@ export const unsubscribeToPlayers = () => {
   socket.off("UPDATE_PLAYERS")
 }
 
-// Request initial players
-export const requestPlayers = (code) => {
-  socket.emit("INIT_PLAYERS", code)
-}
-
 // Returns socket.id of current user
 export const getSocketId = () => {
   return socket.id

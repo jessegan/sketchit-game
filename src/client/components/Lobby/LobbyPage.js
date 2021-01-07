@@ -2,14 +2,15 @@ import React, { Component } from 'react'
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 
-import { joinLobby, leaveLobby, requestPlayers, subscribeToPlayers, unsubscribeToPlayers, getSocketId } from '../../networking'
+import { joinLobby, leaveLobby, subscribeToPlayers, unsubscribeToPlayers, getSocketId } from '../../networking'
 
 export class LobbyPage extends Component {
 
   state = {
     userId: null,
     gameStatus: "menu",
-    players: []
+    players: [],
+    host: null
   }
 
   // TESTING
@@ -19,7 +20,6 @@ export class LobbyPage extends Component {
   // }
 
   componentDidMount() {
-    requestPlayers(this.props.match.params.code)
     subscribeToPlayers(this.updatePlayers)
   }
 
