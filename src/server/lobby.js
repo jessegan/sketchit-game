@@ -38,7 +38,7 @@ class Lobby {
   }
 
   assignHost(){
-    if (this.numPlayers > 1) {
+    if (this.numPlayers >= 1) {
       this.host = Object.keys(this.players)[0]
     } else {
       this.host = null
