@@ -2,22 +2,40 @@ import React, { Component } from 'react'
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 
-import { joinLobby, leaveLobby } from '../../networking'
-import BlockButton from '../Buttons/BlockButton'
+import { joinLobby, leaveLobby, requestPlayers, subscribeToPlayers, unsubscribeToPlayers } from '../../networking'
 
 export class LobbyPage extends Component {
 
   state = {
     playerCreated: false,
-    gameStatus: "menu"
+    gameStatus: "menu",
+    players: []
   }
 
-  socketCleanup = () => {
-    leaveLobby(this.props.match.params.code)
+  // TESTING
+  // state = {
+  //   playerCreated: true,
+  //   gameStatus: "menu"
+  // }
+
+  componentDidMount() {
+    requestPlayers(this.props.match.params.code)
+    subscribeToPlayers(this.updatePlayers)
   }
 
   componentWillUnmount() {
     this.socketCleanup()
+    unsubscribeToPlayers()
+  }
+
+  updatePlayers = ({players}) => {
+    this.setState({
+      players: players
+    })
+  }
+
+  socketCleanup = () => {
+    leaveLobby(this.props.match.params.code)
   }
 
   createPlayer = (playerData) => {
@@ -32,7 +50,7 @@ export class LobbyPage extends Component {
     if (this.state.playerCreated){
       switch(this.state.gameStatus){
         case("menu"):
-          return (<Menu code={ this.props.match.params.code }/>) // Menu component
+          return (<Menu code={ this.props.match.params.code } players={ this.state.players } />) // Menu component
         case ("playing"):
           return (<></>) // Game component
         case ("post-game"):

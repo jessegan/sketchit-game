@@ -11,45 +11,8 @@ import PlayerDiv from './PlayerDiv'
 
 export class PlayersList extends Component {
 
-  state = {
-    players: [
-      {
-        username: "test1",
-        color: "#AAAAAA"
-      },
-      {
-        username: "usernamewithmax",
-        color: "#BBBBBB"
-      },
-      {
-        username: "test3",
-        color: "#CCCCCC"
-      },
-      {
-        username: "test4",
-        color: "#DDDDDD"
-      },
-
-    ]
-  }
-
-  componentDidMount() {
-    // requestPlayers(this.props.code)
-    // subscribeToPlayers(this.updatePlayers)
-  }
-
-  componentWillUnmount() {
-    //unsubscribeToPlayers()
-  }
-
-  updatePlayers = ({players}) => {
-    this.setState({
-      players: players
-    })
-  }
-
   renderPlayerDivs = () => {
-    return this.state.players.map((player,i) => {
+    return this.props.players.map((player,i) => {
       return (<PlayerDiv key={i} player={ player } />)
     })
   }
