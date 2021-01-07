@@ -51,7 +51,7 @@ export class LobbyPage extends Component {
     if (this.state.userId){
       switch(this.state.gameStatus){
         case("menu"):
-          return (<Menu code={ this.props.match.params.code } players={ this.state.players } host={ this.state.host } />) // Menu component
+          return (<Menu userId={ this.state.userId } players={ this.state.players } host={ this.state.host } />) // Menu component
         case ("playing"):
           return (<></>) // Game component
         case ("post-game"):

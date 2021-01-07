@@ -6,7 +6,7 @@ import LobbyOptions from './LobbyOptions'
 const Menu = (props) => {
   return (
     <div className="lobby-menu flex">
-      <LobbyOptions />
+      <LobbyOptions userId={ props.userId } host= { props.host } />
       <PlayersList players={ props.players } host={ props.host } />
     </div>
   )

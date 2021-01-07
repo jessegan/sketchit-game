@@ -2,10 +2,10 @@ import React from 'react'
 import MainCard from '../Cards/MainCard'
 import GameForm from './GameForm'
 
-const LobbyOptions = () => {
+const LobbyOptions = (props) => {
   return (
     <MainCard >
-      <GameForm />
+      <GameForm disabled={ props.userId !== props.host} />
     </MainCard>
   )
 }
