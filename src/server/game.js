@@ -2,13 +2,24 @@ const util = require('./utility')
 
 class Game {
   
-  constructor(players, sockets, options) {
-    this.player = players
-    this.sockets = sockets
+  constructor(lobby, options) {
+    this.lobby = lobby
     this.rounds = options.rounds || 3
+    this.current_round = 1
     this.word_bank = options.word_bank || "default"
     this.game_status = "BEFORE_ROUND"
     this.updateInterval = null
+  }
+
+  /**
+   * GETTERS AND SETTERS
+   */
+  get players() {
+    return this.lobby.players
+  }
+
+  get sockets(){
+    return this.lobby.sockets
   }
 
   /**
@@ -17,9 +28,12 @@ class Game {
   async play() {
     this.startUpdateInterval()
 
-    for(let i = 0; i < this.rounds; i++) {
+    while (this.current_round <= this.rounds) {
       await this.playRound()
+      this.current_round++
     }
+
+    this.end()
   }
 
   /**
@@ -27,6 +41,8 @@ class Game {
    */
   end(){
     this.stopUpdateInterval()
+    this.game_status = "GAME_END"
+    this.sendUpdate()
   }
 
   /**
@@ -36,8 +52,12 @@ class Game {
    */
   async playRound() {
     // Wait 10 seconds before starting round
-    await util.wait(1000*10)
+    this.game_status = "BEFORE_ROUND"
+    await util.wait(1000*3)
     this.game_status = "IN_ROUND"
+    await util.wait(1000*3)
+    this.game_status = "AFTER_ROUND"
+    await util.wait(1000*3)
   }
 
   /**
@@ -60,7 +80,9 @@ class Game {
    */
   createUpdate() {
     return {
-      status: this.game_status
+      status: this.game_status,
+      total_rounds: this.rounds,
+      current_round: this.current_round
     }
   }
 

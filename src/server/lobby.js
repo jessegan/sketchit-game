@@ -56,7 +56,7 @@ class Lobby {
    * @param {*} options 
    */
   async startGame(options) {
-    this.game = new Game(this.players, this.sockets, options)
+    this.game = new Game(this, options)
 
     Object.values(this.sockets).forEach((socket) => {
       socket.emit("LOBBY_STATUS", "IN_GAME")
