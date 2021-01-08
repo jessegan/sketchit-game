@@ -96,6 +96,7 @@ function leaveLobby(code) {
 
   // remove lobby if empty else send players update to room
   if (lobby.numPlayers === 0) {
+    lobby.endGame()
     delete lobbies[code]
     console.log("Lobby deleted:", code)
   } else {

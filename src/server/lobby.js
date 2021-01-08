@@ -49,12 +49,31 @@ class Lobby {
 
   // Methods Managing the Game
 
-  startGame(options) {
+  /**
+   * Creates a new game with options paased in and then starts playing game.
+   * Emits "LOBBY_STATUS" update to client sockets.
+   * 
+   * @param {*} options 
+   */
+  async startGame(options) {
     this.game = new Game(this.players, this.sockets, options)
 
     Object.values(this.sockets).forEach((socket) => {
       socket.emit("LOBBY_STATUS", "IN_GAME")
     })
+
+    await this.game.play()
+    this.endGame()
+  }
+
+  /**
+   * Ends Game before deleting reference to the Game
+   */
+  endGame() {
+    if (this.game) {
+      this.game.end()
+      this.game = null
+    }
   }
 
 }
