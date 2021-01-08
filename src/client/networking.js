@@ -68,7 +68,13 @@ export const getSocketId = () => {
   return socket.id
 }
 
-// Subscribe to game updates by passing down handlers for each event type
+// Subscribe to lobby status updates
 export const subscribeToLobbyStatus = (updateHandler) => {
   socket.on("LOBBY_STATUS", updateHandler)
+}
+
+// Subscribe to game updates from server
+export const subscribeToGameUpdates = (updateHandler) => {
+  socket.on("GAME_UPDATE", updateHandler)
+  console.log("Subscribed to game updates")
 }
