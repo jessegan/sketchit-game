@@ -53,10 +53,7 @@ class Lobby {
     this.game = new Game(this.players, options)
 
     Object.values(this.sockets).forEach((socket) => {
-      socket.emit("GAME_UPDATE", {
-        type: "START_GAME",
-        payload: {}
-      })
+      socket.emit("LOBBY_STATUS", "IN_GAME")
     })
   }
 

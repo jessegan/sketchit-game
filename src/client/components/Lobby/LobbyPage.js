@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 
-import { joinLobby, leaveLobby, subscribeToPlayers, subscribeToGameUpdates, getSocketId } from '../../networking'
+import { joinLobby, leaveLobby, subscribeToPlayers, subscribeToLobbyStatus, getSocketId } from '../../networking'
+import Game from '../Game/Game'
 
 export class LobbyPage extends Component {
 
@@ -21,9 +22,7 @@ export class LobbyPage extends Component {
 
   componentDidMount() {
     subscribeToPlayers(this.updatePlayers)
-    subscribeToGameUpdates({
-      handleStartGame: this.handleStartGame
-    })
+    subscribeToLobbyStatus(this.updateLobbyStatus)
   }
 
   componentWillUnmount() {
@@ -37,9 +36,9 @@ export class LobbyPage extends Component {
     })
   }
 
-  handleStartGame = (payload) => {
+  updateLobbyStatus = (status) => {
     this.setState({
-      lobbyStatus: "playing"
+      lobbyStatus: status
     })
   }
 
@@ -60,8 +59,8 @@ export class LobbyPage extends Component {
       switch(this.state.lobbyStatus){
         case("menu"):
           return (<Menu code={ this.props.match.params.code } userId={ this.state.userId } players={ this.state.players } host={ this.state.host } />) // Menu component
-        case ("playing"):
-          return (<>GAME PLAYING</>) // Game component
+        case ("IN_GAME"):
+          return (<Game />) // Game component
         case ("post-game"):
           return (<></>) // Post-game component
         default: 

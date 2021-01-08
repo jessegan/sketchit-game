@@ -69,13 +69,6 @@ export const getSocketId = () => {
 }
 
 // Subscribe to game updates by passing down handlers for each event type
-export const subscribeToGameUpdates = (updateHandlers) => {
-  socket.on("GAME_UPDATE", (update) => {
-    switch(update.type){
-      case("START_GAME"):
-        updateHandlers.handleStartGame(update.payload)
-      default:
-        console.log("Game update received:", update.type)
-    }
-  })
+export const subscribeToLobbyStatus = (updateHandler) => {
+  socket.on("LOBBY_STATUS", updateHandler)
 }
