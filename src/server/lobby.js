@@ -50,7 +50,7 @@ class Lobby {
   // Methods Managing the Game
 
   startGame(options) {
-    this.game = new Game(this.players, options)
+    this.game = new Game(this.players, this.sockets, options)
 
     Object.values(this.sockets).forEach((socket) => {
       socket.emit("LOBBY_STATUS", "IN_GAME")
