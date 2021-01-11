@@ -1,4 +1,5 @@
 const util = require('./utility')
+const PlayerList = require('./player_list')
 
 class Game {
   
@@ -10,6 +11,9 @@ class Game {
 
     this.game_status = "BEFORE_ROUND"
     this.current_round = 1
+
+    this.current_player = null
+    this.playerOrder = new PlayerList(Object.keys(this.lobby.players))
   }
 
   /**
@@ -40,6 +44,7 @@ class Game {
 
   async playRound() {
     this.game_status = "BEFORE_ROUND"
+    this.playerOrder.reset()
     this.lobby.sendGameUpdateToAll()
 
     await util.wait(1000*3)
@@ -47,7 +52,11 @@ class Game {
     this.game_status = "IN_ROUND"
     this.lobby.sendGameUpdateToAll()
 
-    await util.wait(1000*3)
+    while (this.playerOrder.hasNext()) {
+      await this.playTurn()
+    }
+    
+    this.current_player = null
 
     this.game_status = "AFTER_ROUND"
     this.lobby.sendGameUpdateToAll()
@@ -57,9 +66,11 @@ class Game {
 
   // Plays through turn
   async playTurn() {
+    this.current_player = this.playerOrder.getNext()
+    this.lobby.sendGameUpdateToAll()
 
+    await util.wait(1000*3)
   }
-
 
   // Ends game
 
@@ -77,6 +88,9 @@ class Game {
       status: this.game_status,
       round: {
         number: this.current_round
+      },
+      turn: {
+        drawing_player: this.current_player
       }
     }
   }
