@@ -3,6 +3,8 @@ const util = require('./utility')
 class Game {
   
   constructor(lobby, options) {
+    this.lobby = lobby
+
     this.rounds = options.rounds || 3
     this.word_bank = options.word_bank || "default"
 
@@ -27,59 +29,46 @@ class Game {
     return this.lobby.sockets
   }
 
-  /**
-   * Starts update interval. Plays all rounds while awaiting previous round to finish before starting the next.
-   */
-  async play() {
-    // this.startUpdateInterval()
+  /* METHODS FOR PLAYING GAME */
 
+  // Driver function for game will play {this.rounds} number of rounds
+
+  async play() {
     while (this.current_round <= this.rounds) {
       await this.playRound()
-      this.current_round++
-    }
-
-    this.end()
-  }
-
-  /**
-   * Starts a new Round after a 10s delay and plays round.
-   * 
-   * @returns {Promise}
-   */
-  async playRound() {
-    // Wait 10 seconds before starting round
-    this.game_status = "BEFORE_ROUND"
-    this.current_round = 0
-    await util.wait(1000*3)
-
-    while (this.current_round < this.playerOrder.length) {
-      // this.playTurn(this.current_round)
       this.current_round ++
     }
 
+    await this.end()
+  }
+
+  // Plays through cycle of 1 round
+
+  async playRound() {
+    this.game_status = "BEFORE_ROUND"
+    this.lobby.sendGameUpdateToAll()
+
+    await util.wait(1000*3)
+
+    this.game_status = "IN_ROUND"
+    this.lobby.sendGameUpdateToAll()
+
+    await util.wait(1000*3)
+
     this.game_status = "AFTER_ROUND"
+    this.lobby.sendGameUpdateToAll()
+
     await util.wait(1000*3)
   }
 
-  // /**
-  //  * Starts playing a turn
-  //  */
-  // async playTurn(turnNumber) {
-  //   this.current_player = this.playerOrder[turnNumber]
-  //   let turnTimer = 60
-  //   await util.wait(1000*3)
-  // }
+  // Ends game
 
+  async end() {
+    this.game_status = "AFTER_GAME"
+    this.lobby.sendGameUpdateToAll()
 
-  /**
-   * Cleanup any processes when ending game: Stops update interval
-   */
-  end(){
-    this.stopUpdateInterval()
-    this.game_status = "GAME_END"
-    this.sendUpdate()
+    await util.wait(1000*3)
   }
-
 
   // Create game data object to send through sockets
 

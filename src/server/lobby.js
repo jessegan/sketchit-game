@@ -63,8 +63,8 @@ class Lobby {
     this.lobby_status = "IN_GAME"
     this.sendLobbyUpdateToAll()
 
-    // await this.game.play()
-    // this.endGame()
+    await this.game.play()
+    this.endGame()
   }
 
   /**
@@ -72,8 +72,10 @@ class Lobby {
    */
   endGame() {
     if (this.game) {
-      this.game.end()
       this.game = null
+
+      this.lobby_status = "IN_MENU"
+      this.sendLobbyUpdateToAll()
     }
   }
 
