@@ -10,12 +10,6 @@ class Game {
 
     this.game_status = "BEFORE_ROUND"
     this.current_round = 1
-    
-    // this.current_turn = 0
-    // this.current_player = null
-
-    // this.playerOrder = Object.keys(lobby.players)
-
   }
 
   /**
@@ -61,6 +55,12 @@ class Game {
     await util.wait(1000*3)
   }
 
+  // Plays through turn
+  async playTurn() {
+
+  }
+
+
   // Ends game
 
   async end() {
@@ -74,7 +74,10 @@ class Game {
 
   createUpdate() {
     return {
-      status: this.game_status
+      status: this.game_status,
+      round: {
+        number: this.current_round
+      }
     }
   }
 
