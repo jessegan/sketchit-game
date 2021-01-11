@@ -4,7 +4,6 @@ class Player {
     this.socketid = socketid
     this.username = username
     this.color = color
-    this.score = 0
   }
 
 }
