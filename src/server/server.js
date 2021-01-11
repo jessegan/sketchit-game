@@ -39,9 +39,11 @@ io.on('connection', client => {
   console.log("User connected!", client.id)
 
   client.on("JOIN_LOBBY", joinLobby)
+  client.on("CONNECT_TO_LOBBY", connectToLobby)
   client.on("LEAVE_LOBBY", leaveLobby)
 
   client.on("START_GAME", startGame)
+  client.on("CONNECT_TO_GAME", connectToGame)
 
   client.on('disconnect', onDisconnect)
 })
@@ -54,55 +56,55 @@ io.on('connection', client => {
 var lobbies = {}
 var players = {}
 
+// Emits event to all sockets in room 
+
+function emitToLobby(code, eventType, payload) {
+  io.in(code).emit(eventType, payload)
+}
+
+// Add new player to lobby and add socket to lobby's room
+
 function joinLobby(playerData) {
   const lobby = lobbies[playerData.code]
 
-  // Add player to lobby and join socket room
-  lobby.addPlayer(this,playerData) 
-  this.join(lobby.code)
+  lobby.addPlayer(this.id, playerData) 
   players[this.id] = lobby.code
 
-  console.log("Player Added!")
+  this.join(lobby.code)
 
-  // Emit UPDATE_PLAYERS w/ updated players list
-  sendPlayersUpdate(lobby.code) 
+  console.log("Player Added!", lobby.code)
 }
 
-// Sends updated players list to all sockets in the lobby
-function sendPlayersUpdate(code) {
-  const lobby = lobbies[code]
+// Connects player to lobby by sending lobby update to socket
 
-  io.in(code).emit("UPDATE_PLAYERS", { players: Object.values(lobby.players), host: lobby.host })
-  console.log("Players Update sent to:", code)
-}
-
-
-/**
- * Disconnects client from socket room and lobby
- * 
- * @param {*} code 
- */
-function leaveLobby(code) {
-  // remove player from lobby
-  const lobby = lobbies[code]
-
-  lobby.removePlayer(this.id)
-  delete players[this.id]
-
-  // leave socket room
-  this.leave(code)
-
-  console.log("Player disconnected from:", code)
-
-  // remove lobby if empty else send players update to room
-  if (lobby.numPlayers === 0) {
-    lobby.endGame()
-    delete lobbies[code]
-    console.log("Lobby deleted:", code)
-  } else {
-    sendPlayersUpdate(code)
+function connectToLobby() {
+  if (players[this.id]) {
+    lobbies[players[this.id]].sendLobbyUpdateToPlayer(this)
   }
-  
+
+  console.log("Player connecting to lobby:", this.id)
+}
+
+// Removes player from lobby
+
+function leaveLobby() {
+  if (players[this.id]){
+    const lobby = lobbies[players[this.id]]
+
+    lobby.removePlayer(this.id)
+    delete players[this.id]
+
+    this.leave(lobby.code)
+
+    console.log("Player disconnected from:", lobby.code)
+    
+    if (lobby.numPlayers === 0) {
+      lobby.endGame()
+      delete lobbies[lobby.code]
+
+      console.log("Lobby deleted:", lobby.code)
+    }
+  }  
 }
 
 /**
@@ -127,9 +129,10 @@ function startGame( gameData ) {
 function onDisconnect() {
   // remove from lobby object
   if (players[this.id]){
-    leaveLobby.call(this, players[this.id])
+    leaveLobby.call(this)
   }
-
 
   console.log("User disconnected!", this.id)
 }
+
+exports.emitToLobby = emitToLobby
