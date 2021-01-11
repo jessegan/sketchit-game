@@ -107,20 +107,26 @@ function leaveLobby() {
   }  
 }
 
-/**
- * startGame
- * 
- * @param {Object} gameData contains code and options key
- */
-function startGame( gameData ) {
+// Starts server side game instance and begins running game
 
-  // find the lobby
-  const lobby = lobbies[gameData.code]
+function startGame( gameOptions ) {
+  if (players[this.id]) {
+    const lobby = lobbies[players[this.id]]
 
-  // Start game for the lobby
-  lobby.startGame(gameData.options)
+    lobby.startGame(gameOptions)
 
-  console.log("Starting Game:", lobby.code)
+    console.log("Starting Game:", lobby.code)
+  }
+}
+
+// Connects player to game socket events
+
+function connectToGame() {
+  if (players[this.id]) {
+    const lobby = lobbies[players[this.id]]
+
+    lobby.sendGameUpdateToPlayer(this)
+  }
 }
 
 /**
