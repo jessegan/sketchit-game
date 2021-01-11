@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 
-export const socket = io(`ws://${window.location.host}`, { reconnection: false })
+const socket = io(`ws://${window.location.host}`, { reconnection: false })
 const connectedPromise = new Promise(resolve => {
   socket.on('connect', () => {
     console.log('Connected to server!')
@@ -27,50 +27,50 @@ export const createLobby = () => {
   return fetch(`http://${window.location.host}/lobbies`, options)
 }
 
+// Returns socket.id of current user
+
+export const getSocketId = () => {
+  return socket.id
+}
+
 /**
  * SOCKET EMITTERS
  */
 
-// Emit JOIN_LOBBY to socket w/ code, username, color 
-export const joinLobby = (code,username,color) => {
-  socket.emit("JOIN_LOBBY", {code , username, color })
+// Emit JOIN_LOBBY to socket w/ player data from form
+
+export const joinLobby = (playerData) => {
+  socket.emit("JOIN_LOBBY", playerData)
 }
 
-// Emit LEAVE_LOBBY to socket w/ code
-export const leaveLobby = code => {
-  socket.emit("LEAVE_LOBBY", code)
-  unsubscribeToPlayers()
+// Emit LEAVE_LOBBY to socket and subscribe to updates
+
+export const leaveLobby = () => {
+  socket.emit("LEAVE_LOBBY")
+  unsubscribeToLobby()
 }
 
 // Emit START_GAME
+
 export const startGame = (code, options) => {
   socket.emit("START_GAME", {code,options})
 
   console.log("Start game message sent to:", code)
 }
 
-/**
- * SOCKET SUBSCRIPTIONS
- */
+/* SOCKET SUBSCRIPTIONS */
 
-// Subscribe to players updates
-export const subscribeToPlayers = (updateHandler) => {
-  socket.on("UPDATE_PLAYERS", updateHandler)
+// Subscribe to lobby updates
+
+export const subscribeToLobby = (updateHandler) => {
+  socket.on("UPDATE_LOBBY", updateHandler)
+  socket.emit("CONNECT_TO_LOBBY")
 }
 
-// Unsubscribe to players updates
-export const unsubscribeToPlayers = () => {
-  socket.off("UPDATE_PLAYERS")
-}
+// Unsubscribe to lobby updates
 
-// Returns socket.id of current user
-export const getSocketId = () => {
-  return socket.id
-}
-
-// Subscribe to lobby status updates
-export const subscribeToLobbyStatus = (updateHandler) => {
-  socket.on("LOBBY_STATUS", updateHandler)
+const unsubscribeToLobby = () => {
+  socket.off("UPDATE_LOBBY")
 }
 
 // Subscribe to game updates from server

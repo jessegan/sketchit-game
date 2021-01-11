@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 
-import { joinLobby, leaveLobby, subscribeToPlayers, subscribeToLobbyStatus, getSocketId } from '../../networking'
+import { joinLobby, leaveLobby, subscribeToLobby, getSocketId } from '../../networking'
 import Game from '../Game/Game'
 
 export class LobbyPage extends Component {
 
   state = {
     userId: null,
-    lobbyStatus: "menu",
+    status: "LOADING",
     players: [],
     host: null
   }
@@ -20,44 +20,41 @@ export class LobbyPage extends Component {
   //   gameStatus: "menu"
   // }
 
-  componentDidMount() {
-    subscribeToPlayers(this.updatePlayers)
-    subscribeToLobbyStatus(this.updateLobbyStatus)
-  }
-
   componentWillUnmount() {
     this.socketCleanup()
   }
 
-  updatePlayers = ({players, host}) => {
+  updateLobby = (lobbyData) => {
     this.setState({
-      players: players,
-      host: host
-    })
-  }
-
-  updateLobbyStatus = (status) => {
-    this.setState({
-      lobbyStatus: status
+      ...lobbyData
     })
   }
 
   socketCleanup = () => {
-    leaveLobby(this.props.match.params.code)
+    if (this.state.userId){
+      leaveLobby()
+    }
   }
 
-  createPlayer = (playerData) => {
-    joinLobby(this.props.match.params.code, playerData.username,playerData.color)
+  createPlayer = (formData) => {
+    const playerData = {
+      code: this.props.match.params.code,
+      ...formData
+    }
+
+    joinLobby(playerData)
 
     this.setState({
       userId: getSocketId()
     })
+
+    subscribeToLobby(this.updateLobby)
   }
 
   renderLobby = () => {
     if (this.state.userId){
-      switch(this.state.lobbyStatus){
-        case("menu"):
+      switch(this.state.status){
+        case("IN_MENU"):
           return (<Menu code={ this.props.match.params.code } userId={ this.state.userId } players={ this.state.players } host={ this.state.host } />) // Menu component
         case ("IN_GAME"):
           return (<Game />) // Game component
