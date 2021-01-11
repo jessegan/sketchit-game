@@ -5,7 +5,6 @@ class Game {
   constructor(lobby, options) {
     this.rounds = options.rounds || 3
     this.word_bank = options.word_bank || "default"
-    this.updateInterval = null
 
     this.game_status = "BEFORE_ROUND"
     this.current_round = 1
@@ -32,7 +31,7 @@ class Game {
    * Starts update interval. Plays all rounds while awaiting previous round to finish before starting the next.
    */
   async play() {
-    this.startUpdateInterval()
+    // this.startUpdateInterval()
 
     while (this.current_round <= this.rounds) {
       await this.playRound()
@@ -82,46 +81,11 @@ class Game {
   }
 
 
-  /**
-   * Sends game data to all connected sockets
-   */
-  sendUpdate() {
-    const update = this.createUpdate()
+  // Create game data object to send through sockets
 
-    Object.keys(this.sockets).forEach(playerId => {
-      const socket = this.sockets[playerId]
-
-      socket.emit("GAME_UPDATE", update)
-    })
-
-    console.log("Game Update sent:", update)
-  }
-
-  /**
-   * Creates a object that bundles Game data to send to client
-   */
   createUpdate() {
     return {
-      status: this.game_status,
-      total_rounds: this.rounds,
-      current_round: this.current_round
-    }
-  }
-
-  /**
-   * Starts 500 ms interval to send updates to all sockets connected to the game
-   */
-  startUpdateInterval() {
-    this.updateInterval = setInterval(this.sendUpdate.bind(this), 1000/2)
-  }
-
-  /**
-   * Ends update interval
-   */
-  stopUpdateInterval() {
-    if (this.updateInterval){
-      clearInterval(this.updateInterval)
-      this.updateInterval = null
+      status: this.game_status
     }
   }
 

@@ -9,13 +9,13 @@ class Lobby {
 
   constructor() {
     this.code = customNanoid()
+
     this.players = {}
-
     this.lobby_status = "IN_MENU"
-
-    this.game = null
     this.host = null
     this.numPlayers = 0
+
+    this.game = null
   }
 
   // add_player - adds player to players object and handles settings hosts
@@ -53,23 +53,18 @@ class Lobby {
     } 
   }
 
-  // Methods Managing the Game
+  /* METHODS MANAGING GAME */
 
-  /**
-   * Creates a new game with options paased in and then starts playing game.
-   * Emits "LOBBY_STATUS" update to client sockets.
-   * 
-   * @param {*} options 
-   */
+  // Create new game and begins server side state of game
+
   async startGame(options) {
     this.game = new Game(this, options)
 
-    Object.values(this.sockets).forEach((socket) => {
-      socket.emit("LOBBY_STATUS", "IN_GAME")
-    })
+    this.lobby_status = "IN_GAME"
+    this.sendLobbyUpdateToAll()
 
-    await this.game.play()
-    this.endGame()
+    // await this.game.play()
+    // this.endGame()
   }
 
   /**
@@ -81,6 +76,8 @@ class Lobby {
       this.game = null
     }
   }
+
+  /* SOCKET METHODS */
 
   // Sends updated lobby data to all connected sockets
 
@@ -96,6 +93,22 @@ class Lobby {
     playerSocket.emit("UPDATE_LOBBY", this.createUpdate())
 
     console.log("Lobby update sent to:", playerSocket.id)
+  }
+
+  // Sends game data to all connected sockets
+
+  sendGameUpdateToAll() {
+    server.emitToLobby(this.code, "UPDATE_GAME", this.game.createUpdate())
+
+    console.log("Game update sent to all:", this.code)
+  }
+
+  // Sends game data to a given socket
+
+  sendGameUpdateToPlayer(playerSocket) {
+    playerSocket.emit("UPDATE_GAME", this.game.createUpdate())
+
+    console.log("Game update sent to player:", playerSocket.id)
   }
 
   createUpdate() {
