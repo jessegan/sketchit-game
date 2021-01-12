@@ -52,10 +52,8 @@ export const leaveLobby = () => {
 
 // Emit START_GAME
 
-export const startGame = (code, options) => {
-  socket.emit("START_GAME", {code,options})
-
-  console.log("Start game message sent to:", code)
+export const startGame = (options) => {
+  socket.emit("START_GAME", options)
 }
 
 /* SOCKET SUBSCRIPTIONS */
@@ -74,7 +72,14 @@ const unsubscribeToLobby = () => {
 }
 
 // Subscribe to game updates from server
-export const subscribeToGameUpdates = (updateHandler) => {
-  socket.on("GAME_UPDATE", updateHandler)
-  console.log("Subscribed to game updates")
+
+export const subscribeToGame = (updateHandler) => {
+  socket.on("UPDATE_GAME", updateHandler)
+  socket.emit("CONNECT_TO_GAME")
+}
+
+// Unsubscribe to game updates
+
+const unsubscribeToGame = () => {
+  socket.off("UPDATE_GAME")
 }
