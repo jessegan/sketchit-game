@@ -1,27 +1,31 @@
 import React, { Component } from 'react'
 import MainCard from '../Cards/MainCard'
 
-import { subscribeToGameUpdates } from '../../networking'
+import { subscribeToGame } from '../../networking'
 
 export class Game extends Component {
 
   state = {
-    status: "BEFORE_ROUND"
+    status: "GAME_LOADING",
+    round: null,
+    turn: null
   }
 
   componentDidMount() {
-    subscribeToGameUpdates(this.updateGame)
+    subscribeToGame(this.updateGame)
   }
 
-  updateGame = (payload) => {
-    this.setState(payload)
+  updateGame = (gameData) => {
+    this.setState({
+      ...gameData,
+      round: gameData.round,
+      turn: gameData.turn
+    })
   }
   
-
   render() {
     return (
       <MainCard>
-        <h1>{ this.state.status }</h1>
       </MainCard>
 
     )
