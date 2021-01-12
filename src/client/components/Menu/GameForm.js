@@ -12,7 +12,7 @@ export class GameForm extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
 
-    startGame(this.props.code, this.state)
+    startGame(this.state)
   }
 
   render() {
