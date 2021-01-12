@@ -4,6 +4,7 @@ import MainCard from '../Cards/MainCard'
 import { subscribeToGame } from '../../networking'
 import ScoresList from '../Players/ScoresList'
 import Header from './Header'
+import Content from './Content'
 
 export class Game extends Component {
 
@@ -48,7 +49,7 @@ export class Game extends Component {
       <MainCard classes={"game-container align-hori-center grid"}>
         <Header round={ this.state.round } player={ this.state.turn } />
         <ScoresList players={ this.props.players } scores={ this.state.scores } />
-        <div className="game-canvas" style={{backgroundColor: "black"}}></div>
+        <Content status={ this.state.status } round={ this.state.round } />
         <div className="game-chat" style={{backgroundColor: "yellow"}}></div>
       </MainCard>
 

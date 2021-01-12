@@ -100,12 +100,11 @@ h4 {
   grid-template-rows: 50px 450px;
   grid-template-areas: 
     "header header header"
-    "scores canvas chat";
+    "scores content chat";
 }
 
 .game-header {
   grid-area: header;
-  border: 1px solid black;
   border-radius: 5px 5px 0 0;
 }
 
@@ -124,8 +123,8 @@ h4 {
   display: flex;
   flex-direction: column;
 }
-.game-canvas {
-  grid-area: canvas;
+.game-content {
+  grid-area: content;
 }
 .game-chat {
   grid-area: chat;
