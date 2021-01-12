@@ -53,23 +53,84 @@ h4 {
   margin: 0 5px;
 }
 
-.dot {
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  display: block;
-}
-
-.username {
-  font-size: small;
-  font-weight: 900;
-}
-
 .players-list.grid {
   grid-template-columns: repeat(2,1fr);
   grid-template-rows: repeat(5,1fr);
   row-gap: 20px;
 }
+
+.dot {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.username {
+  font-size: small;
+  font-weight: 900;
+  padding: 4px;
+
+  word-wrap: break-word;
+}
+
+.score {
+  width: 50px;
+  text-align: right;
+}
+
+.player-line {
+  padding: 4px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.player-line :nth-child(2) {
+  flex-grow: 1;
+}
+
+.game-container.card-main {
+  width: fit-content;
+}
+
+.game-container.grid {
+  grid-template-columns: 200px 600px 200px;
+  grid-template-rows: 50px 450px;
+  grid-template-areas: 
+    "header header header"
+    "scores canvas chat";
+}
+
+.game-header {
+  grid-area: header;
+  border: 1px solid black;
+  border-radius: 5px 5px 0 0;
+}
+
+.header-sidebar {
+  width: 200px;
+  height: 100%;
+  background-color: cornflowerblue;
+  color: white;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-scores {
+  grid-area: scores;
+  display: flex;
+  flex-direction: column;
+}
+.game-canvas {
+  grid-area: canvas;
+}
+.game-chat {
+  grid-area: chat;
+}
+
 
 /* Cards */
 
@@ -164,6 +225,10 @@ input[type='text']:hover {
   text-align: center;
 }
 
+.text-right {
+  text-align: right;
+}
+
 .text-underline {
   text-decoration: underline;
 }
@@ -174,4 +239,16 @@ input[type='text']:hover {
 
 .flex {
   display: flex;
+}
+
+.inline {
+  display: inline;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.float-right {
+  float: right;
 }

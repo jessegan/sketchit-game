@@ -7,18 +7,40 @@ import Game from '../Game/Game'
 
 export class LobbyPage extends Component {
 
-  state = {
-    userId: null,
-    status: "LOADING",
-    players: [],
-    host: null
-  }
+  // state = {
+  //   userId: null,
+  //   status: "LOADING",
+  //   players: [],
+  //   host: null
+  // }
 
   // TESTING
-  // state = {
-  //   playerCreated: true,
-  //   gameStatus: "menu"
-  // }
+  state = {
+    userId: "1",
+    status: "IN_GAME",
+    players: [
+      {
+        username: "test1",
+        socketid: "1",
+        color: "#FF6900"
+      },
+      {
+        username: "test2",
+        socketid: "2",
+        color: "#2CCCE4"
+      },
+      {
+        username: "test3",
+        socketid: "3",
+        color: "#BA68C8"
+      },
+      {
+        username: "test4",
+        socketid: "4",
+        color: "#ABB8C3"
+      }
+    ]
+  }
 
   componentWillUnmount() {
     this.socketCleanup()
@@ -57,7 +79,7 @@ export class LobbyPage extends Component {
         case("IN_MENU"):
           return (<Menu code={ this.props.match.params.code } userId={ this.state.userId } players={ this.state.players } host={ this.state.host } />) // Menu component
         case ("IN_GAME"):
-          return (<Game />) // Game component
+          return (<Game players={ this.state.players } />) // Game component
         case ("post-game"):
           return (<></>) // Post-game component
         default: 
