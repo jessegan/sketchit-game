@@ -5,6 +5,7 @@ import { subscribeToGame } from '../../networking'
 import ScoresList from '../Players/ScoresList'
 import Header from './Header'
 import Content from './Content'
+import Chat from './Chat'
 
 export class Game extends Component {
 
@@ -16,12 +17,15 @@ export class Game extends Component {
 
   // TESTING
   state = {
-    status: "BEFORE_ROUND",
+    status: "IN_TURN",
     round: {
       number: 1
     },
     turn: {
-      drawing_player: null
+      drawing_player: {
+        socketid: 1,
+        username: "test1"
+      }
     },
     scores: {
       1: 1000,
@@ -47,10 +51,10 @@ export class Game extends Component {
   render() {
     return (
       <MainCard classes={"game-container align-hori-center grid"}>
-        <Header round={ this.state.round } player={ this.state.turn } />
+        <Header status={ this.state.status } round={ this.state.round } turn={ this.state.turn } />
         <ScoresList players={ this.props.players } scores={ this.state.scores } />
         <Content status={ this.state.status } round={ this.state.round } />
-        <div className="game-chat" style={{backgroundColor: "yellow"}}></div>
+        <Chat />
       </MainCard>
 
     )
