@@ -128,8 +128,15 @@ h4 {
 }
 .game-chat {
   grid-area: chat;
+  padding: 2px;
+  
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 50px;
 }
 
+.chat-log {
+  border: 1px solid black;
+}
 
 /* Cards */
 
