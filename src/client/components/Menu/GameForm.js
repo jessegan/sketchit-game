@@ -6,7 +6,12 @@ import { startGame } from '../../networking'
 export class GameForm extends Component {
 
   state = {
-    rounds: 3
+    rounds: 3,
+    round_options: {},
+    turn_options: {
+      turn_time: 5,
+      word_bank: null
+    }
   }
 
   handleSubmit = (e) => {
