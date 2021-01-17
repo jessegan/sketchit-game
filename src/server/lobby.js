@@ -11,9 +11,9 @@ class Lobby {
     this.code = customNanoid()
 
     this.players = {}
-    this.lobby_status = "IN_MENU"
-    this.host = null
+    this.status = "IN_MENU"
     this.numPlayers = 0
+    this.host = null
 
     this.game = null
   }
@@ -24,33 +24,44 @@ class Lobby {
     this.players[playerId] = new Player(playerId,playerData.username,playerData.color)
     this.numPlayers++
 
-    if (this.numPlayers===1){
-      this.host = playerId
+    this.sendLobbyUpdateToAll() 
+
+    if (this.game) {
+      this.game.addPlayer(playerId)
     }
 
-    this.sendLobbyUpdateToAll()
+    if (this.host === null) {
+      this.assignHost(playerId)
+    }
   }
 
   // remove_player - removes player from lobby and check to see if lobby is empty
 
   removePlayer(playerId) {
     delete this.players[playerId]
-
     this.numPlayers--
 
-    if (playerId === this.host){
-      this.assignHost()
+    if (this.game) {
+      this.game.removePlayer(playerId)
     }
 
+    if (this.host === playerId) {
+      this.assignHost()
+    }
+    
     this.sendLobbyUpdateToAll()
   }
 
-  assignHost(){
-    if (this.numPlayers >= 1) {
-      this.host = Object.keys(this.players)[0]
+  // assigns host to a given player or another player from list of players
+
+  assignHost(playerId = null) {
+    if (playerId) {
+      this.host = playerId
     } else {
-      this.host = null
-    } 
+      if (this.numPlayers > 0) {
+        this.host = Object.keys(this.players)[0]
+      }
+    }
   }
 
   /* METHODS MANAGING GAME */
@@ -60,26 +71,35 @@ class Lobby {
   async startGame(options) {
     this.game = new Game(this, options)
 
-    this.lobby_status = "IN_GAME"
+    this.status = "IN_GAME"
     this.sendLobbyUpdateToAll()
+    await this.game.start()
 
-    await this.game.play()
     this.endGame()
   }
 
-  /**
-   * Ends Game before deleting reference to the Game
-   */
+  // Deletes Game and sets status back to menu
+
   endGame() {
     if (this.game) {
       this.game = null
 
-      this.lobby_status = "IN_MENU"
+      this.status = "IN_MENU"
       this.sendLobbyUpdateToAll()
     }
   }
 
   /* SOCKET METHODS */
+
+  // Returns object containing client side data
+
+  createUpdate() {
+    return {
+      status: this.status,
+      players: this.players,
+      host: this.host
+    }
+  }
 
   // Sends updated lobby data to all connected sockets
 
@@ -97,29 +117,6 @@ class Lobby {
     console.log("Lobby update sent to:", playerSocket.id)
   }
 
-  // Sends game data to all connected sockets
-
-  sendGameUpdateToAll() {
-    server.emitToLobby(this.code, "UPDATE_GAME", this.game.createUpdate())
-
-    console.log("Game update sent to all:", this.code)
-  }
-
-  // Sends game data to a given socket
-
-  sendGameUpdateToPlayer(playerSocket) {
-    playerSocket.emit("UPDATE_GAME", this.game.createUpdate())
-
-    console.log("Game update sent to player:", playerSocket.id)
-  }
-
-  createUpdate() {
-    return {
-      status: this.lobby_status,
-      players: Object.values(this.players),
-      host: this.host
-    }
-  }
 }
 
 module.exports = Lobby
