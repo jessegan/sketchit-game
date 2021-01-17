@@ -125,7 +125,7 @@ function connectToGame() {
   if (players[this.id]) {
     const lobby = lobbies[players[this.id]]
 
-    lobby.sendGameUpdateToPlayer(this)
+    lobby.game.sendGameUpdateToPlayer(this)
   }
 }
 
