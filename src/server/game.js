@@ -1,98 +1,139 @@
 const util = require('./utility')
-const PlayerList = require('./player_list')
+const Round = require('./round')
+const server = require('./server')
 
 class Game {
   
   constructor(lobby, options) {
     this.lobby = lobby
 
+    this.status = "IN_GAME"
+
     this.rounds = options.rounds || 3
-    this.word_bank = options.word_bank || "default"
-
-    this.game_status = "BEFORE_ROUND"
     this.current_round = 1
-
-    this.current_player = null
-    this.playerOrder = new PlayerList(Object.keys(this.lobby.players))
+    this.round = new Round(this,options.round_options,options.turn_options)
   }
 
-  /**
-   * GETTERS AND SETTERS
-   */
-  get players() {
-    return this.lobby.players
+  /* GETTERS AND SETTERS */
+
+  // GET - players of lobby (as object)
+
+  get playerIds() {
+    return Object.keys(this.lobby.players)
   }
 
-  get sockets(){
-    return this.lobby.sockets
-  }
-
-  /* METHODS FOR PLAYING GAME */
+  /* DRIVER METHOD */
 
   // Driver function for game will play {this.rounds} number of rounds
 
-  async play() {
+  async start() {
+    this._reset()
+
+    await this._inGame()
+    await this._endGame()
+  }
+
+  /* INSTANCE METHODS */
+
+  // Reset - sets game scores for all players in lobby to 0
+
+  _reset() {
+    this.scores = {}
+    Object.keys(this.lobby.players).forEach( p => {
+      this.scores[p] = 0
+    })
+  }
+
+  // IN - starts rounds until finished all of them
+
+  async _inGame() {
     while (this.current_round <= this.rounds) {
-      await this.playRound()
+      await this.round.start()
       this.current_round ++
     }
-
-    await this.end()
   }
 
-  // Plays through cycle of 1 round
+  // END - sends end game status to all clients
 
-  async playRound() {
-    this.game_status = "BEFORE_ROUND"
-    this.playerOrder.reset()
-    this.lobby.sendGameUpdateToAll()
+  async _endGame() {
+    this.status = "END_GAME"
+    this.sendGameUpdateToAll()
 
     await util.wait(1000*3)
+  }
 
-    this.game_status = "IN_ROUND"
-    this.lobby.sendGameUpdateToAll()
+  // Adds a given points to player's score
 
-    while (this.playerOrder.hasNext()) {
-      await this.playTurn()
+  addScore(playerId, points) {
+    this.scores[playerId] += points
+  }
+
+  // Returns ordered list of playerId's by current score
+
+  getStandings() {
+    return Object.keys(this.scores).sort((a,b) => this.scores[b] - this.scores[a])
+  }
+
+  // Adds player that joins mid-game
+
+  addPlayer(playerId) {
+    this.scores[playerId] = 0
+
+    if (this.round.status !== "INACTIVE") {
+      this.round.addPlayer(playerId)
     }
-    
-    this.current_player = null
-
-    this.game_status = "AFTER_ROUND"
-    this.lobby.sendGameUpdateToAll()
-
-    await util.wait(1000*3)
   }
 
-  // Plays through turn
-  async playTurn() {
-    this.current_player = this.playerOrder.getNext()
-    this.lobby.sendGameUpdateToAll()
+  // Remove player that joins mid-game
 
-    await util.wait(1000*3)
+  removePlayer(playerId) {
+    delete this.scores[playerId]
+
+    if (this.round.status !== "INACTIVE") {
+      this.round.removePlayer(playerId)
+    }
   }
 
-  // Ends game
-
-  async end() {
-    this.game_status = "AFTER_GAME"
-    this.lobby.sendGameUpdateToAll()
-
-    await util.wait(1000*3)
-  }
-
+  /* SOCKET METHODS */
+  
   // Create game data object to send through sockets
 
   createUpdate() {
-    return {
-      status: this.game_status,
-      round: {
-        number: this.current_round
-      },
-      turn: {
-        drawing_player: this.current_player
-      }
+    switch(this.status) {
+      case ("IN_GAME"):
+        return {
+          status: this.status,
+          scores: this.scores,
+          current_round: this.current_round,
+          round: this.round.createUpdate()
+        }
+      case ("END_GAME"): 
+        return {
+          status: this.status,
+          scores: this.scores
+        }
+      default:
+        return{
+          status: this.status,
+          standings: this.getStandings()
+        }
     }
+  }
+
+  // Sends game updates to lobby
+
+  sendGameUpdateToAll() {
+    server.emitToLobby(this.lobby.code, "UPDATE_GAME", this.createUpdate())
+
+    console.log("Game update sent to all:", this.lobby.code)
+  }
+
+  // Sends game update to specific player
+
+  sendGameUpdateToPlayer(playerSocket) {
+    playerSocket.emit("UPDATE_GAME", this.createUpdate())
+
+    console.log("Game update sent to player:", playerSocket.id)
   }
 
 }
