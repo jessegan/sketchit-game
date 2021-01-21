@@ -39,7 +39,7 @@ export const getSocketId = () => {
 
 // Emit JOIN_LOBBY to socket w/ player data from form
 
-export const joinLobby = (playerData) => {
+export const emitJoinLobby = (playerData) => {
   socket.emit("JOIN_LOBBY", playerData)
 }
 
