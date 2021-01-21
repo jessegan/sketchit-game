@@ -95,6 +95,7 @@ class Lobby {
 
   createUpdate() {
     return {
+      code: this.code,
       status: this.status,
       players: this.players,
       host: this.host
