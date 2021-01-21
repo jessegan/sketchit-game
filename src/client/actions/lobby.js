@@ -1,4 +1,4 @@
-import { emitJoinLobby } from '../networking'
+import { emitJoinLobby, emitLeaveLobby } from '../networking'
 
 export const updateLobby = (lobbyData) => {
   return {
@@ -13,7 +13,11 @@ export const joinLobby = (playerData) => {
     return {type: "JOIN_LOBBY"}
 }
 
+export const leaveLobby = () => {
+  emitLeaveLobby()
 
+  return { type: "LEAVE_LOBBY" }
+}
 
   // TESTING
   // state = {

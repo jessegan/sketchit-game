@@ -4,20 +4,18 @@ import { connect } from 'react-redux'
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 
-import { leaveLobby, subscribeToLobby } from '../../networking'
-import { joinLobby, updateLobby } from '../../actions/lobby'
+import { subscribeToLobby } from '../../networking'
+import { joinLobby, leaveLobby, updateLobby } from '../../actions/lobby'
 import Game from '../Game/Game'
 
 export class LobbyPage extends Component {
 
-  componentWillUnmount() {
-    this.socketCleanup()
+  componentDidMount() {
+    subscribeToLobby(this.props.updateLobby)
   }
 
-  socketCleanup = () => {
-    if (this.state.userId){
-      leaveLobby()
-    }
+  componentWillUnmount() {
+    this.props.leaveLobby()
   }
 
   createPlayer = (formData) => {
@@ -27,8 +25,6 @@ export class LobbyPage extends Component {
     }
 
     this.props.joinLobby(playerData)
-
-    subscribeToLobby(this.props.updateLobby)
   }
 
   renderLobby = () => {
@@ -67,7 +63,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     updateLobby: (lobbyData) => dispatch(updateLobby(lobbyData)),
-    joinLobby: (playerData) => dispatch(joinLobby(playerData))
+    joinLobby: (playerData) => dispatch(joinLobby(playerData)),
+    leaveLobby: () => dispatch(leaveLobby())
   }
 }
 

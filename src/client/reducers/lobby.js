@@ -17,6 +17,13 @@ export default function lobby(state={
         playerCreated: true
       })
     case("LEAVE_LOBBY"):
+      return Object.assign({}, state, {
+        code: null,
+        playerCreated: false,
+        status: "LOADING",
+        players: null,
+        host: null
+      })
     default:
       return state
   }
