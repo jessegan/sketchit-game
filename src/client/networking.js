@@ -45,7 +45,7 @@ export const emitJoinLobby = (playerData) => {
 
 // Emit LEAVE_LOBBY to socket and subscribe to updates
 
-export const leaveLobby = () => {
+export const emitLeaveLobby = () => {
   socket.emit("LEAVE_LOBBY")
   unsubscribeToLobby()
 }
