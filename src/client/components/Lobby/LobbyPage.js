@@ -1,56 +1,17 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 
-import { joinLobby, leaveLobby, subscribeToLobby, getSocketId } from '../../networking'
+import { leaveLobby, subscribeToLobby } from '../../networking'
+import { joinLobby, updateLobby } from '../../actions/lobby'
 import Game from '../Game/Game'
 
 export class LobbyPage extends Component {
 
-  state = {
-    userId: null,
-    status: "LOADING",
-    players: [],
-    host: null
-  }
-
-  // TESTING
-  // state = {
-  //   userId: "1",
-  //   status: "IN_GAME",
-  //   players: {
-  //     "1": {
-  //       username: "test1",
-  //       socketid: "1",
-  //       color: "#FF6900"
-  //     },
-  //     "2": {
-  //       username: "test2",
-  //       socketid: "2",
-  //       color: "#2CCCE4"
-  //     },
-  //     "3": {
-  //       username: "test3",
-  //       socketid: "3",
-  //       color: "#BA68C8"
-  //     },
-  //     "4": {
-  //       username: "test4",
-  //       socketid: "4",
-  //       color: "#ABB8C3"
-  //     }
-  //   },
-  //   host: "1"
-  // }
-
   componentWillUnmount() {
     this.socketCleanup()
-  }
-
-  updateLobby = (lobbyData) => {
-    this.setState({
-      ...lobbyData
-    })
   }
 
   socketCleanup = () => {
@@ -65,20 +26,16 @@ export class LobbyPage extends Component {
       ...formData
     }
 
-    joinLobby(playerData)
+    this.props.joinLobby(playerData)
 
-    this.setState({
-      userId: getSocketId()
-    })
-
-    subscribeToLobby(this.updateLobby)
+    subscribeToLobby(this.props.updateLobby)
   }
 
   renderLobby = () => {
-    if (this.state.userId){
-      switch(this.state.status){
+    if (this.props.playerCreated && this.props.code){
+      switch(this.props.status){
         case("IN_MENU"):
-          return (<Menu code={ this.props.match.params.code } userId={ this.state.userId } players={ this.state.players } host={ this.state.host } />) // Menu component
+          return (<Menu code={ this.props.code } userId={ "" } players={{} } host={ "1" } />) // Menu component
         case ("IN_GAME"):
           return (<Game players={ this.state.players } />) // Game component
         default: 
@@ -92,10 +49,26 @@ export class LobbyPage extends Component {
   render() {
     return (
       <div className="lobbypage">
+        { this.props.playerCreated ? "true":"false"}
         { this.renderLobby() }
       </div>
     )
   }
 }
 
-export default LobbyPage
+function mapStateToProps(state) {
+  return {
+    status: state.lobby.status,
+    playerCreated: state.lobby.playerCreated,
+    code: state.lobby.code
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateLobby: (lobbyData) => dispatch(updateLobby(lobbyData)),
+    joinLobby: (playerData) => dispatch(joinLobby(playerData))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LobbyPage)
