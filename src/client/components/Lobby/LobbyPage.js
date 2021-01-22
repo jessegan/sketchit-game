@@ -5,14 +5,15 @@ import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 import LoadingPage from '../Loading/LoadingPage'
 
-import { checkLobbyPromise, subscribeToLobby } from '../../networking'
-import { joinLobby, leaveLobby } from '../../actions/lobby'
+import { checkLobbyPromise, joinLobbyPromise } from '../../networking'
+import { leaveLobby } from '../../actions/lobby'
 import Game from '../Game/Game'
 
 export class LobbyPage extends Component {
 
   state={
-    validLobby: false
+    validLobby: false,
+    playerCreated: false
   }
 
   componentDidMount() {
@@ -34,18 +35,16 @@ export class LobbyPage extends Component {
   }
 
   createPlayer = (formData) => {
-    const playerData = {
-      code: this.props.match.params.code,
-      ...formData
-    }
-
-    this.props.joinLobby(playerData)
-
-    subscribeToLobby()
+    joinLobbyPromise(this.props.code, formData)
+      .then(()=> {
+        this.setState({
+          playerCreated: true
+        })
+      })
   }
 
   renderLobby = () => {
-    if (this.props.playerCreated && this.props.code){
+    if (this.state.playerCreated && this.state.validLobby){
       switch(this.props.status){
         case("IN_MENU"):
           return (<Menu code={ this.props.code } userId={ "" } host={ "1" } />) // Menu component
@@ -77,14 +76,12 @@ export class LobbyPage extends Component {
 function mapStateToProps(state) {
   return {
     status: state.lobby.status,
-    playerCreated: state.lobby.playerCreated,
     code: state.lobby.code
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    joinLobby: (playerData) => dispatch(joinLobby(playerData)),
     leaveLobby: () => dispatch(leaveLobby())
   }
 }
