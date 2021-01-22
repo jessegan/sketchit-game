@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import SubmitButton from '../Buttons/SubmitButton'
 
-import { startGame } from '../../networking'
+import { startGamePromise } from '../../networking'
 
 export class GameForm extends Component {
 
@@ -17,7 +17,7 @@ export class GameForm extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
 
-    startGame(this.state)
+    startGamePromise(this.props.code, this.state)
   }
 
   render() {

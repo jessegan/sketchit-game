@@ -7,6 +7,10 @@ const initialState = {
 
 export default function game(state=initialState,action){
   switch(action.type){
+
+    case("game/update"):
+      return Object.assign({}, state, action.payload)
+
     default:
       return state
   }

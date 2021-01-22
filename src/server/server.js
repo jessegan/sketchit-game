@@ -52,7 +52,7 @@ io.on('connection', client => {
   client.on("LEAVE_LOBBY", leaveLobby)
 
   client.on("START_GAME", startGame)
-  client.on("CONNECT_TO_GAME", connectToGame)
+  client.on("LOAD_GAME", loadGame)
 
   client.on('disconnect', onDisconnect)
 })
@@ -118,9 +118,9 @@ function leaveLobby() {
 
 // Starts server side game instance and begins running game
 
-function startGame( gameOptions ) {
-  if (players[this.id]) {
-    const lobby = lobbies[players[this.id]]
+function startGame( code, gameOptions ) {
+  if (lobbies[code]) {
+    const lobby = lobbies[code]
 
     lobby.startGame(gameOptions)
 
@@ -130,9 +130,9 @@ function startGame( gameOptions ) {
 
 // Connects player to game socket events
 
-function connectToGame() {
-  if (players[this.id]) {
-    const lobby = lobbies[players[this.id]]
+function loadGame(code) {
+  if (lobbies[code]) {
+    const lobby = lobbies[code]
 
     lobby.game.sendGameUpdateToPlayer(this)
   }

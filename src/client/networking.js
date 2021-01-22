@@ -2,6 +2,7 @@ import io from 'socket.io-client'
 import store from './store'
 import { setUserId } from'./actions/session'
 import { updateLobby, setLobbyCode, leaveLobby } from './actions/lobby'
+import { updateGame } from './actions/game'
 
 const socket = io(`ws://${window.location.host}`, { reconnection: false })
 const connectedPromise = new Promise(resolve => {
@@ -46,8 +47,6 @@ export const leaveLobbyPromise = () => {
   ])
 }
 
-/* FETCH REQUESTS */
-
 export const createLobbyPromise = () => {
   const options = {
     method: 'POST',
@@ -70,6 +69,23 @@ export const checkLobbyPromise = (code) => {
         throw new Error(`Could not find lobby with code: ${code}`)
       }
     })
+}
+
+// Starts game on server side
+
+export const startGamePromise = (code, options) => {
+  return Promise.all([
+    emitStartGame(code, options)
+  ])
+}
+
+// Promise that fulfills subscribing to and loading game data
+
+export const joinGamePromise = (code) => {
+  return Promise.all([
+    subscribeToGame(),
+    emitLoadGame(code)
+  ])
 }
 
 // Returns socket.id of current user
@@ -102,8 +118,14 @@ const emitLeaveLobby = () => {
 
 // Emit START_GAME
 
-export const startGame = (options) => {
-  socket.emit("START_GAME", options)
+const emitStartGame = (code, options) => {
+  socket.emit("START_GAME", code, options)
+}
+
+// Emit LOAD_GAME to socket
+
+const emitLoadGame = (code) => {
+  socket.emit("LOAD_GAME", code)
 }
 
 /* SOCKET SUBSCRIPTIONS */
@@ -124,9 +146,10 @@ const unsubscribeToLobby = () => {
 
 // Subscribe to game updates from server
 
-export const subscribeToGame = (updateHandler) => {
-  socket.on("UPDATE_GAME", updateHandler)
-  socket.emit("CONNECT_TO_GAME")
+export const subscribeToGame = () => {
+  socket.on("UPDATE_GAME", (gameData) => {
+    store.dispatch(updateGame(gameData))
+  })
 }
 
 // Unsubscribe to game updates
