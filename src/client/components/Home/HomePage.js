@@ -3,12 +3,12 @@ import BlockButton from '../Buttons/BlockButton'
 import MainCard from '../Cards/MainCard'
 import JoinLobby from './JoinLobby'
 
-import { createLobby } from '../../networking'
+import { createLobbyPromise } from '../../networking'
 
 const HomePage = (props) => {
 
   const onClick = () => {
-    createLobby()
+    createLobbyPromise()
       .then(resp => resp.json())
       .then(data => props.history.push(`/lobby/${data.code}`))
   }

@@ -38,7 +38,7 @@ export const joinLobbyPromise = (code, playerData) => {
 
 /* FETCH REQUESTS */
 
-export const createLobby = () => {
+export const createLobbyPromise = () => {
   const options = {
     method: 'POST',
     headers: {
