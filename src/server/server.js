@@ -48,7 +48,7 @@ io.on('connection', client => {
   console.log("User connected!", client.id)
 
   client.on("JOIN_LOBBY", joinLobby)
-  client.on("CONNECT_TO_LOBBY", connectToLobby)
+  client.on("LOAD_LOBBY", loadLobby)
   client.on("LEAVE_LOBBY", leaveLobby)
 
   client.on("START_GAME", startGame)
@@ -73,8 +73,8 @@ function emitToLobby(code, eventType, payload) {
 
 // Add new player to lobby and add socket to lobby's room
 
-function joinLobby(playerData) {
-  const lobby = lobbies[playerData.code]
+function joinLobby(code, playerData) {
+  const lobby = lobbies[code]
 
   lobby.addPlayer(this.id, playerData) 
   players[this.id] = lobby.code
@@ -86,12 +86,12 @@ function joinLobby(playerData) {
 
 // Connects player to lobby by sending lobby update to socket
 
-function connectToLobby() {
+function loadLobby() {
   if (players[this.id]) {
     lobbies[players[this.id]].sendLobbyUpdateToPlayer(this)
   }
 
-  console.log("Player connecting to lobby:", this.id)
+  console.log("Player loaded lobby:", this.id)
 }
 
 // Removes player from lobby

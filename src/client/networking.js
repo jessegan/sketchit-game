@@ -3,7 +3,6 @@ import store from './store'
 import { setUserId } from'./actions/session'
 import { updateLobby, setLobbyCode } from './actions/lobby'
 
-
 const socket = io(`ws://${window.location.host}`, { reconnection: false })
 const connectedPromise = new Promise(resolve => {
   socket.on('connect', () => {
@@ -11,6 +10,10 @@ const connectedPromise = new Promise(resolve => {
     resolve()
   })
 })
+
+/* MAIN METHODS */
+
+// Connect user to socket servers
 
 export const connect = () => {
   connectedPromise.then(() => {
@@ -23,6 +26,15 @@ export const connect = () => {
   })
 }
 
+// Add user to lobby and request to load lobby data from socket server
+
+export const joinLobbyPromise = (code, playerData) => {
+  return Promise.all([
+    subscribeToLobby(),
+    emitJoinLobby(code, playerData),
+    emitLoadLobby()
+  ])
+}
 
 /* FETCH REQUESTS */
 
@@ -62,8 +74,14 @@ export const getSocketId = () => {
 
 // Emit JOIN_LOBBY to socket w/ player data from form
 
-export const joinLobby = (playerData) => {
-  socket.emit("JOIN_LOBBY", playerData)
+const emitJoinLobby = (code, playerData) => {
+  socket.emit("JOIN_LOBBY", code, playerData)
+}
+
+// Emit LOAD_LOBBY to socket
+
+const emitLoadLobby = () => {
+  socket.emit("LOAD_LOBBY")
 }
 
 // Emit LEAVE_LOBBY to socket and subscribe to updates
