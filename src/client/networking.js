@@ -1,4 +1,7 @@
 import io from 'socket.io-client'
+import store from './store'
+import { setUserId } from'./actions/session'
+
 
 const socket = io(`ws://${window.location.host}`, { reconnection: false })
 const connectedPromise = new Promise(resolve => {
@@ -10,6 +13,9 @@ const connectedPromise = new Promise(resolve => {
 
 export const connect = () => {
   connectedPromise.then(() => {
+    
+    store.dispatch(setUserId(socket.id))
+
     socket.on('disconnect', () => {
       console.log("Disconnected from server!")
     })
