@@ -3,15 +3,30 @@ import { connect } from 'react-redux'
 
 import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
+import LoadingPage from '../Loading/LoadingPage'
 
-import { subscribeToLobby } from '../../networking'
-import { joinLobby, leaveLobby, updateLobby } from '../../actions/lobby'
+import { checkLobbyPromise, subscribeToLobby } from '../../networking'
+import { joinLobby, leaveLobby } from '../../actions/lobby'
 import Game from '../Game/Game'
 
 export class LobbyPage extends Component {
 
+  state={
+    validLobby: false
+  }
+
   componentDidMount() {
-    subscribeToLobby(this.props.updateLobby)
+    checkLobbyPromise(this.props.match.params.code)
+      .then(resp => {
+        console.log(resp.message)
+        this.setState({
+          validLobby: true
+        })
+      })
+      .catch(err => {
+        console.log(err.message)
+        this.props.history.push('/')
+      })
   }
 
   componentWillUnmount() {
@@ -25,13 +40,15 @@ export class LobbyPage extends Component {
     }
 
     this.props.joinLobby(playerData)
+
+    subscribeToLobby()
   }
 
   renderLobby = () => {
     if (this.props.playerCreated && this.props.code){
       switch(this.props.status){
         case("IN_MENU"):
-          return (<Menu code={ this.props.code } userId={ "" } players={{} } host={ "1" } />) // Menu component
+          return (<Menu code={ this.props.code } userId={ "" } host={ "1" } />) // Menu component
         case ("IN_GAME"):
           return (<Game players={ this.state.players } />) // Game component
         default: 
@@ -43,12 +60,17 @@ export class LobbyPage extends Component {
   }
 
   render() {
-    return (
-      <div className="lobbypage">
-        { this.props.playerCreated ? "true":"false"}
-        { this.renderLobby() }
-      </div>
-    )
+    if (this.state.validLobby) {
+      return (
+        <div className="lobbypage">
+          { this.renderLobby() }
+        </div>
+      )
+    } else {
+      return (
+        <LoadingPage message="Connecting to lobby..." />
+      )
+    }
   }
 }
 
@@ -62,7 +84,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateLobby: (lobbyData) => dispatch(updateLobby(lobbyData)),
     joinLobby: (playerData) => dispatch(joinLobby(playerData)),
     leaveLobby: () => dispatch(leaveLobby())
   }

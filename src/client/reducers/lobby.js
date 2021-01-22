@@ -1,7 +1,4 @@
-import { getSocketId } from '../networking'
-
 export default function lobby(state={
-  userId: getSocketId(),
   code: null,
   playerCreated: false,
   status: "LOADING",
@@ -10,7 +7,11 @@ export default function lobby(state={
 },action){
 
   switch(action.type){
-    case("UPDATE_LOBBY"):
+    case("lobby/set"):
+      return Object.assign({}, state, {
+        code: action.payload
+      })
+    case("lobby/update"):
       return Object.assign({}, state, action.payload)
     case("JOIN_LOBBY"):
       return Object.assign({}, state, {

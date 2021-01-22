@@ -20,6 +20,15 @@ app.post('/lobbies',(req,res) => {
   res.json(lobby)
 })
 
+app.get('/lobbies/:code/valid', (req, res) => {
+  const lobby = lobbies[req.params.code]
+  if(lobby) {
+    res.status(200).send({ message: `Successfully found lobby with code: ${req.params.code}`})
+  } else {
+    res.status(400).send({ message: `No lobby found with code: ${req.params.code}`})
+  }
+})
+
 app.get('/*', (req,res) => {
   res.sendFile(path.join(__dirname,'../../dist/index.html'), (err) => {
     if (err){

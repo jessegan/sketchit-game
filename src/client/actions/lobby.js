@@ -1,8 +1,15 @@
 import { emitJoinLobby, emitLeaveLobby } from '../networking'
 
+export const setLobbyCode = (code) => {
+  return {
+    type: "lobby/set",
+    payload: code
+  }
+}
+
 export const updateLobby = (lobbyData) => {
   return {
-    type: "UPDATE_LOBBY",
+    type: "lobby/update",
     payload: lobbyData
   }
 }

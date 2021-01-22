@@ -1,6 +1,7 @@
 import io from 'socket.io-client'
 import store from './store'
 import { setUserId } from'./actions/session'
+import { updateLobby, setLobbyCode } from './actions/lobby'
 
 
 const socket = io(`ws://${window.location.host}`, { reconnection: false })
@@ -13,7 +14,7 @@ const connectedPromise = new Promise(resolve => {
 
 export const connect = () => {
   connectedPromise.then(() => {
-    
+
     store.dispatch(setUserId(socket.id))
 
     socket.on('disconnect', () => {
@@ -21,6 +22,9 @@ export const connect = () => {
     })
   })
 }
+
+
+/* FETCH REQUESTS */
 
 export const createLobby = () => {
   const options = {
@@ -31,6 +35,19 @@ export const createLobby = () => {
   }
 
   return fetch(`http://${window.location.host}/lobbies`, options)
+}
+
+export const checkLobbyPromise = (code) => {
+  return fetch(`http://${window.location.host}/lobbies/${code}/valid`)
+    .then(resp => {
+      if (resp.status === 200) {
+        store.dispatch(setLobbyCode(code))
+
+        return resp.json()
+      } else {
+        throw new Error(`Could not find lobby with code: ${code}`)
+      }
+    })
 }
 
 // Returns socket.id of current user
@@ -45,7 +62,7 @@ export const getSocketId = () => {
 
 // Emit JOIN_LOBBY to socket w/ player data from form
 
-export const emitJoinLobby = (playerData) => {
+export const joinLobby = (playerData) => {
   socket.emit("JOIN_LOBBY", playerData)
 }
 
@@ -66,9 +83,10 @@ export const startGame = (options) => {
 
 // Subscribe to lobby updates
 
-export const subscribeToLobby = (updateHandler) => {
-  socket.on("UPDATE_LOBBY", updateHandler)
-  socket.emit("CONNECT_TO_LOBBY")
+export const subscribeToLobby = () => {
+  socket.on("UPDATE_LOBBY", (lobbyData) => {
+    store.dispatch(updateLobby(lobbyData))
+  })
 }
 
 // Unsubscribe to lobby updates
