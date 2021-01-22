@@ -1,7 +1,7 @@
 import io from 'socket.io-client'
 import store from './store'
 import { setUserId } from'./actions/session'
-import { updateLobby, setLobbyCode } from './actions/lobby'
+import { updateLobby, setLobbyCode, leaveLobby } from './actions/lobby'
 
 const socket = io(`ws://${window.location.host}`, { reconnection: false })
 const connectedPromise = new Promise(resolve => {
@@ -33,6 +33,16 @@ export const joinLobbyPromise = (code, playerData) => {
     subscribeToLobby(),
     emitJoinLobby(code, playerData),
     emitLoadLobby()
+  ])
+}
+
+// Remove user from lobby and reset store
+
+export const leaveLobbyPromise = () => {
+  return Promise.all([
+    emitLeaveLobby(),
+    unsubscribeToLobby(),
+    leaveLobby()
   ])
 }
 
@@ -86,9 +96,8 @@ const emitLoadLobby = () => {
 
 // Emit LEAVE_LOBBY to socket and subscribe to updates
 
-export const emitLeaveLobby = () => {
+const emitLeaveLobby = () => {
   socket.emit("LEAVE_LOBBY")
-  unsubscribeToLobby()
 }
 
 // Emit START_GAME

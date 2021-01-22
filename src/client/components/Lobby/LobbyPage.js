@@ -5,8 +5,7 @@ import CreatePlayer from './CreatePlayer'
 import Menu from '../Menu/Menu'
 import LoadingPage from '../Loading/LoadingPage'
 
-import { checkLobbyPromise, joinLobbyPromise } from '../../networking'
-import { leaveLobby } from '../../actions/lobby'
+import { checkLobbyPromise, joinLobbyPromise, leaveLobbyPromise } from '../../networking'
 import Game from '../Game/Game'
 
 export class LobbyPage extends Component {
@@ -31,7 +30,7 @@ export class LobbyPage extends Component {
   }
 
   componentWillUnmount() {
-    this.props.leaveLobby()
+    leaveLobbyPromise()
   }
 
   createPlayer = (formData) => {
@@ -80,10 +79,4 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    leaveLobby: () => dispatch(leaveLobby())
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LobbyPage)
+export default connect(mapStateToProps)(LobbyPage)

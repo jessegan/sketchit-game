@@ -1,5 +1,3 @@
-import { emitLeaveLobby } from '../networking'
-
 export const setLobbyCode = (code) => {
   return {
     type: "lobby/set",
@@ -15,7 +13,5 @@ export const updateLobby = (lobbyData) => {
 }
 
 export const leaveLobby = () => {
-  emitLeaveLobby()
-
-  return { type: "LEAVE_LOBBY" }
+  return { type: "lobby/leave" }
 }
