@@ -7,7 +7,7 @@ const Menu = (props) => {
   return (
     <div className="lobby-menu flex">
       <LobbyOptions code={ props.code } userId={ props.userId } host= { props.host } />
-      <PlayersList players={ Object.values(props.players) } host={ props.host } />
+      <PlayersList />
     </div>
   )
 }

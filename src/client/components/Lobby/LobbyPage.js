@@ -46,7 +46,7 @@ export class LobbyPage extends Component {
     if (this.state.playerCreated && this.state.validLobby){
       switch(this.props.status){
         case("IN_MENU"):
-          return (<Menu code={ this.props.code } userId={ "" } host={ "1" } />) // Menu component
+          return (<Menu code={ this.props.code } userId={ this.props.userId } host={ this.props.host } />) // Menu component
         case ("IN_GAME"):
           return (<Game players={ this.state.players } />) // Game component
         default: 
@@ -75,7 +75,9 @@ export class LobbyPage extends Component {
 function mapStateToProps(state) {
   return {
     status: state.lobby.status,
-    code: state.lobby.code
+    code: state.lobby.code,
+    host: state.lobby.host,
+    userId: state.session.userId
   }
 }
 
