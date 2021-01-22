@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import { requestPlayers, subscribeToPlayers, unsubscribeToPlayers } from '../../networking'
 import MainCard from '../Cards/MainCard'
-
 import PlayerDiv from './PlayerDiv'
 
 /**
@@ -25,9 +24,15 @@ export class PlayersList extends Component {
           { this.renderPlayerDivs() }
         </div>
       </MainCard>
-
     )
   }
 }
 
-export default PlayersList
+function mapStateToProps(state) {
+  return {
+    players: Object.values(state.lobby.players),
+    host: state.lobby.host
+  }
+}
+
+export default connect(mapStateToProps)(PlayersList)
