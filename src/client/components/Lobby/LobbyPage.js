@@ -51,7 +51,7 @@ export class LobbyPage extends Component {
         case ("IN_GAME"):
           return (<Game players={ this.state.players } />) // Game component
         default: 
-          return (<></>) // Some error page
+          return (<LoadingPage message={"Loading lobby..."} />) // Some error page
       }
     } else {
       return (<CreatePlayer createPlayer={ this.createPlayer } />) // CreatePlayer Component
