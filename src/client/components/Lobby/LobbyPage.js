@@ -48,7 +48,7 @@ export class LobbyPage extends Component {
         case("IN_MENU"):
           return (<Menu code={ this.props.code } userId={ this.props.userId } host={ this.props.host } />) // Menu component
         case ("IN_GAME"):
-          return (<Game players={ this.state.players } />) // Game component
+          return (<Game />) // Game component
         default: 
           return (<LoadingPage message={"Loading lobby..."} />) // Some error page
       }
