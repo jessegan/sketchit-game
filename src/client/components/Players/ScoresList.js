@@ -1,8 +1,12 @@
 import React from 'react'
-import PlayerDiv from './PlayerDiv'
+import { useSelector } from 'react-redux'
 import PlayerScoreDiv from './PlayerScoreDiv'
 
-const ScoresList = ({players, scores, round}) => {
+const ScoresList = () => {
+
+  const players = useSelector(state => state.lobby.players)
+  const scores = useSelector(state => state.game.scores)
+  const round = useSelector(state => state.game.round)
 
   const renderedPlayers = Object.values(players).map( (player,i) => {
     return <PlayerScoreDiv key={i} player={ player } score={ scores[player.socketid] } />
