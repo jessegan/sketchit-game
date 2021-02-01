@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
 import InTurn from './InTurn'
 import PostTurn from './PostTurn'
 import PreTurn from './PreTurn'
@@ -6,13 +8,13 @@ import PreTurn from './PreTurn'
 export class Turn extends Component {
 
   renderContent() {
-    switch(this.props.turn.status) {
+    switch(this.props.status) {
       case("PRE_TURN"):
-        return (<PreTurn drawing_player={ this.props.players[this.props.turn.drawing_player] } />)
+        return (<PreTurn drawing_player={ this.props.players[this.props.drawing_player] } />)
       case("IN_TURN"):
-        return (<InTurn turn={ this.props.turn } />)
+        return (<InTurn />)
       case("POST_TURN"):
-        return (<PostTurn players={ this.props.players } points={ this.props.turn.points }/>)
+        return (<PostTurn players={ this.props.players } points={ this.props.points }/>)
     }
   }
 
@@ -25,4 +27,13 @@ export class Turn extends Component {
   }
 }
 
-export default Turn
+function mapStateToProps(state) {
+  return {
+    status: state.game.round.turn.status,
+    drawing_player: state.game.round.turn.drawing_player,
+    points: state.game.round.turn.points,
+    players: state.lobby.players
+  }
+}
+
+export default connect(mapStateToProps)(Turn)
